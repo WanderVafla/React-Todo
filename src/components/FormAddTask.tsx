@@ -1,17 +1,40 @@
+import { useEffect, useRef, useState } from 'react';
+
 export function FormAddTask() {
+  const [isContentVisible, setIsContentVisible] = useState(false);
+  const formRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (formRef.current && !formRef.current.contains(event.target as Node)) {
+        setIsContentVisible(false);
+      } else if (
+        formRef.current &&
+        formRef.current.contains(event.target as Node)
+      ) {
+        setIsContentVisible(true);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   return (
-    <form id="form-add-task">
+    <form ref={formRef} id="form-add-task">
       <input type="text" id="title-task-input" placeholder="Todo name ..." />
-      <div id="form-task-content">
-        <textarea
-          id="description-area"
-          placeholder="Desctiption ..."
-        ></textarea>
-        <div>
-          <input type="submit" />
-          <input type="date" />
-        </div>
-      </div>
+      {isContentVisible && (
+        <>
+          <textarea
+            id="description-area"
+            placeholder="Desctiption ..."
+          ></textarea>
+          <div>
+            <input type="submit" />
+            <input type="date" />
+          </div>
+        </>
+      )}
     </form>
   );
 }
