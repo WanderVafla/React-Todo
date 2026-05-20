@@ -8,13 +8,13 @@ const App = () => {
       <div>Error Management Window (hidden)</div>
       <main>
         <h1>React Todos list</h1>
-          <FormAddTask />
-          <TodoList />
-          
-          <button type='button'>Delete All</button>
+        <FormAddTask />
+        <TodoList />
+
+        <button type="button">Delete All</button>
       </main>
     </>
-  )
+  );
 };
 
 export default App;
