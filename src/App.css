@@ -1,8 +1,19 @@
+* {
+  --background-color: linear-gradient(to bottom, #020917, #101725);
+}
+
 body {
   margin: 0;
   color: #fff;
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-  background-image: linear-gradient(to bottom, #020917, #101725);
+  background-image: var(--background-color);
+}
+
+main {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .content {
@@ -24,3 +35,105 @@ body {
   font-weight: 400;
   opacity: 0.5;
 }
+
+#form-add-task {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  border-radius: 30px;
+  border: 2px solid grey;
+  width: 35vw;
+  gap: 1rem;
+}
+
+#form-add-task * {
+  border: none;
+  outline: none;
+  background: transparent;
+  color: white;
+  height: 2rem;
+}
+
+#form-add-task input[type='submit'] {
+  border-radius: 30px;
+}
+
+#form-add-task input[type='submit']:hover {
+  background: blue;
+}
+
+#todos-list-border {
+  padding: 1rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: var(--background-color);
+  border-radius: 33px;
+}
+
+#todos-list-border::before {
+  content: '';
+  position: absolute;
+  width: calc(100% + 0.2rem);
+  height: calc(100% + 0.2rem);
+  border-radius: 32px;
+  background: linear-gradient(to bottom, red, yellow);
+  z-index: -1;
+}
+
+#todos-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 50vw;
+}
+
+.todo-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border: 3px solid #fff;
+}
+
+.todo-item::before {
+  content: '';
+  position: absolute;
+  background: red;
+  width: calc(100%);
+  height: calc(100%);
+  z-index: -1;
+}
+
+.todo-item > span {
+  font-size: large;
+  display: flex;
+  height: 1.5em;
+  padding: 0.5em;
+  gap: 0.5rem;
+  justify-content: space-between;
+  align-items: center;
+  background: blue;
+}
+
+.todo-item > span > div {
+  display: flex;
+  gap: 0.5em;
+}
+
+.todo-item > div {
+  padding: 6px;
+  height: 5rem;
+}
+
+.todo-item > div:empty {
+  display: none;
+}
+
+#form-task-content {
+  display: none;
+}
+
+

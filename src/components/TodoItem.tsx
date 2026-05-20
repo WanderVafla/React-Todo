@@ -12,6 +12,7 @@ export function TodoItem({ title, content, due, done }: TodoType) {
   const handleChecked = (event) => {
     setIsChecked(event.target.checked);
   };
+
   return (
     <div className="todo-item">
       <span>
@@ -21,8 +22,8 @@ export function TodoItem({ title, content, due, done }: TodoType) {
         </div>
         <span>{!due ? 'no date' : due}</span>
         <div>
-            <button type='button'>Edit</button>
-            <button type="button">Remvoe</button>
+          <button type="button">Edit</button>
+          <button type="button">Remvoe</button>
         </div>
       </span>
       <div>{content && content}</div>
