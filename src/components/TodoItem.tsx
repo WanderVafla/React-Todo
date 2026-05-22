@@ -9,8 +9,8 @@ interface TodoType {
 
 export function TodoItem({ title, content, due, done }: TodoType) {
   const [taskTitle] = useState(title);
-  const [taskContent] = useState(content)
-  const [dueDate] = useState(due)
+  const [taskContent] = useState(content);
+  const [dueDate] = useState(due);
   const [isChecked, setIsChecked] = useState(done);
   const handleChecked = (event) => {
     setIsChecked(event.target.checked);

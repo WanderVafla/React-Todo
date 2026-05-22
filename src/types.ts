@@ -1,7 +1,10 @@
-export interface Task {
-  id: number;
+export interface TaskPost {
   title: string;
   content: string;
-  due: string;
+  due_date: string;
   done: boolean;
+}
+
+export interface Task extends TaskPost {
+  id: number;
 }

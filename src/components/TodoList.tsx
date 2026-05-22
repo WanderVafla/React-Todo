@@ -1,36 +1,42 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type Dispatch } from 'react';
 import { TodoItem } from './TodoItem';
 import { getTasks } from '../api';
-import type { Task } from '../types'
+import type { Task } from '../types';
 import { SpinnerLoading } from './SpinnerLoading';
 
+export function TodoList({
+  tasks,
+  setTasks,
+}: {
+  tasks: Task[];
+  setTasks: Dispatch<React.SetStateAction<Task[]>>;
+}) {
+  const [isLoading, setIsLoading] = useState(true);
 
-export function TodoList() {
-  const [tasks, setTasks] = useState<Task[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect( () => {
+  useEffect(() => {
     const handleTasks = async () => {
-      setTasks(await getTasks())
-      setIsLoading(false)
-    }
-    handleTasks()
-    
-  }, [])
+      setTasks(await getTasks());
+      setIsLoading(false);
+    };
+    handleTasks();
+  }, [setTasks]);
   return (
     <div id="todos-list-border">
       <SortPanel />
       <hr />
       <div id="todos-list">
-        {isLoading && <SpinnerLoading /> }
-        {tasks ? tasks.map(task => 
-        <TodoItem
-        key={task.id}
-        title={task.title} 
-        content={task.content} 
-        due={task.due} done={task.done} 
-        />) : 
-        "No task to complete."}
+        {isLoading && <SpinnerLoading />}
+        {tasks
+          ? tasks.map((task) => (
+              <TodoItem
+                key={task.id}
+                title={task.title}
+                content={task.content}
+                due={task.due_date}
+                done={task.done}
+              />
+            ))
+          : 'No task to complete.'}
       </div>
     </div>
   );
