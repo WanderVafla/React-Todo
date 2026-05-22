@@ -5,6 +5,6 @@ import { pluginReact } from '@rsbuild/plugin-react';
 export default defineConfig({
   plugins: [pluginReact()],
   output: {
-    assetPrefix: '/React-Todo/'
-  }
+    assetPrefix: '/React-Todo/',
+  },
 });
