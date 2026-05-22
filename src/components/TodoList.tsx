@@ -24,7 +24,8 @@ export function TodoList() {
       <div id="todos-list">
         {isLoading && <SpinnerLoading /> }
         {tasks ? tasks.map(task => 
-        <TodoItem 
+        <TodoItem
+        key={task.id}
         title={task.title} 
         content={task.content} 
         due={task.due} done={task.done} 
