@@ -3,7 +3,7 @@ import { tasksReducer } from './taskReducer';
 import { TasksContext, TasksDispacthTasks } from './TasksContext';
 
 export function TasksReducer({ children }) {
-  const [tasks, dispacth] = useReducer(tasksReducer, null);
+  const [tasks, dispacth] = useReducer(tasksReducer, []);
 
   return (
     <TasksContext value={tasks}>
