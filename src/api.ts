@@ -8,7 +8,7 @@ export async function getTasks(): Promise<Task[]> {
       method: 'GET',
     });
     if (!request.ok) {
-      return await request.json();
+      throw new Error(await request.json());
     }
     return await request.json();
   } catch (e) {

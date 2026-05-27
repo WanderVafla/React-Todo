@@ -9,7 +9,7 @@ export interface Task extends TaskPost {
   id: number;
 }
 
-export interface ApiReturn {
+export type ApiReturn = {
   success: boolean;
   message: Task | string;
-}
+};
