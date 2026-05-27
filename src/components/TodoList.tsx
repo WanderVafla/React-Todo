@@ -17,20 +17,13 @@ export function TodoList() {
     <div id="todos-list-border">
       <SortPanel />
       <hr />
-
-      <div id="todos-list">
-        {tasks
-          ? tasks.map((task) => (
-              <TodoItem
-                key={task.id}
-                title={task.title}
-                content={task.content}
-                due={task.due_date}
-                done={task.done}
-              />
-            ))
-          : 'No task to complete.'}
-      </div>
+      {tasks && (
+        <div id="todos-list">
+          {tasks
+            ? tasks.map((task) => <TodoItem key={task.id} task={task} />)
+            : 'No task to complete.'}
+        </div>
+      )}
     </div>
   );
 }
