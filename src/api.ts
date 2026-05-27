@@ -33,14 +33,24 @@ export async function postTask(task: TaskPost): Promise<ApiReturn> {
       return { success: false, message: error, task: null };
     }
     if (request.status === 201) {
-      const reponse: Task | Task[] = await request.json();
+      const response: Task | Task[] = await request.json();
       return {
         success: true,
         message: null,
-        task: Array.isArray(reponse) ? reponse[0] : reponse
+        task: Array.isArray(response) ? response[0] : response,
       };
     }
+    return {
+      success: false,
+      message: 'Unexpected response status',
+      task: null,
+    };
   } catch (e) {
     console.error(e);
+    return {
+      success: false,
+      message: e instanceof Error ? e.message : 'An unknown error occurred',
+      task: null,
+    };
   }
 }
