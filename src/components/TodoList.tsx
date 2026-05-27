@@ -2,7 +2,6 @@ import { use, useEffect } from 'react';
 import { TodoItem } from './TodoItem';
 import { tasksPromise } from '../utils';
 import { useTasks, useTasksDispatch } from '../hooks/useTasks';
-import type { Task } from '../types';
 
 export function TodoList() {
   const tasksDispatch = useTasksDispatch();

@@ -5,14 +5,9 @@ import {
   useState,
   type Dispatch,
 } from 'react';
-import type { ApiReturn, Task, TaskAction, TaskPost } from '../types';
+import type { ApiReturn, TaskAction, TaskPost } from '../types';
 import { postTask } from '../api';
 import { useTasksDispatch } from '../hooks/useTasks';
-
-// type TaskAction = {
-//   type: 'add' | 'load';
-//   body: Task | Task[];
-// };
 
 async function addNewTask(
   _previousState: ApiReturn | null,
