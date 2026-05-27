@@ -40,8 +40,6 @@ export async function postTask(task: TaskPost): Promise<ApiReturn> {
       };
     }
   } catch (e) {
-    console.log('error post');
-
     console.error(e);
   }
 }
