@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useState, type ChangeEvent } from 'react';
 import type { Task } from '../types';
 
 export function TodoItem({ task }: { task: Task }) {
   const [isChecked, setIsChecked] = useState(task.done);
 
-  const handleChecked = (event) => {
+  const handleChecked = (event: ChangeEvent<HTMLInputElement>) => {
     setIsChecked(event.target.checked);
   };
 

@@ -1,13 +1,22 @@
 import { useContext } from 'react';
 import {
   TasksContext,
-  TasksDispacthTasks,
+  TasksDispatchContext,
 } from '../components/context/TasksContext';
+import type { Task } from '../types';
 
-export function useTasks() {
-  return useContext(TasksContext);
+export function useTasks(): Task[] {
+  const context = useContext(TasksContext);
+  if (context === null) {
+    throw new Error('useTasks must be used within a TasksProvider')
+  }
+  return context
 }
 
 export function useTasksDispatch() {
-  return useContext(TasksDispacthTasks);
+  const context = useContext(TasksDispatchContext);
+  if (context === null) {
+    throw new Error('useTasksDispatch must be used within a TasksProvider')
+  }
+  return context
 }

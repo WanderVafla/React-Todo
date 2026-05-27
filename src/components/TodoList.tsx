@@ -1,19 +1,19 @@
 import { use, useEffect } from 'react';
 import { TodoItem } from './TodoItem';
-import { promisTasks } from '../utils';
+import { tasksPromise } from '../utils';
 import { useTasks, useTasksDispatch } from '../hooks/useTasks';
 import type { Task } from '../types';
 
 export function TodoList() {
-  const tasksDispath = useTasksDispatch();
-  const tasks: Task[] = useTasks();
-  const tasksFromAPI = use(promisTasks);
+  const tasksDispatch = useTasksDispatch();
+  const tasks = useTasks();
+  const tasksFromAPI = use(tasksPromise);
   useEffect(() => {
-    tasksDispath({
+    tasksDispatch({
       type: 'load',
-      tasks: tasksFromAPI,
+      body: tasksFromAPI,
     });
-  }, [tasksDispath, tasksFromAPI]);
+  }, [tasksDispatch, tasksFromAPI]);
   return (
     <>
       {tasks.length > 0 ? (

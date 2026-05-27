@@ -1,3 +1,3 @@
 import { getTasks } from './api';
 
-export const promisTasks = getTasks();
+export const tasksPromise = getTasks();

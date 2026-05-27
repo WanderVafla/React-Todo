@@ -1,13 +1,13 @@
-import { useReducer } from 'react';
+import { useReducer, type ReactNode } from 'react';
 import { tasksReducer } from './taskReducer';
-import { TasksContext, TasksDispacthTasks } from './TasksContext';
+import { TasksContext, TasksDispatchContext } from './TasksContext';
 
-export function TasksProvider({ children }) {
-  const [tasks, dispacth] = useReducer(tasksReducer, []);
+export function TasksProvider({ children }: { children: ReactNode }) {
+  const [tasks, dispatch] = useReducer(tasksReducer, []);
 
   return (
     <TasksContext value={tasks}>
-      <TasksDispacthTasks value={dispacth}>{children}</TasksDispacthTasks>
+      <TasksDispatchContext value={dispatch}>{children}</TasksDispatchContext>
     </TasksContext>
   );
 }

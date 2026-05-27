@@ -17,5 +17,5 @@ export type ApiReturn = {
 
 export type TaskAction = {
   type: 'add' | 'load';
-  body: Task | Task[] | string;
+  body: Task | Task[];
 };
