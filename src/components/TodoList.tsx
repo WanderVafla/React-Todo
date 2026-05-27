@@ -2,10 +2,11 @@ import { use, useEffect } from 'react';
 import { TodoItem } from './TodoItem';
 import { promisTasks } from '../utils';
 import { useTasks, useTasksDispatch } from '../hooks/useTasks';
+import type { Task } from '../types';
 
 export function TodoList() {
   const tasksDispath = useTasksDispatch();
-  const tasks = useTasks();
+  const tasks: Task[] = useTasks();
   const tasksFromAPI = use(promisTasks);
   useEffect(() => {
     tasksDispath({
@@ -15,7 +16,7 @@ export function TodoList() {
   }, [tasksDispath, tasksFromAPI]);
   return (
     <>
-      {Array(tasks).length < 1 ? (
+      {tasks.length > 0 ? (
         <div id="todos-list-border">
           <SortPanel />
           <hr />
