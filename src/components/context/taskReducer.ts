@@ -5,7 +5,7 @@ export function tasksReducer(tasks, action) {
     case 'load': {
       return action.tasks;
     }
-    case 'add': {      
+    case 'add': {
       const task: Task = {
         id: action.body.id,
         title: action.body.title,

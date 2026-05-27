@@ -12,10 +12,10 @@ export interface Task extends TaskPost {
 export type ApiReturn = {
   success: boolean;
   message: string | null;
-  task: Task | Task[] | null
+  task: Task | Task[] | null;
 };
 
 export type TaskAction = {
-  type: 'add' | 'load'
-  body: Task | Task[] | string
-}
+  type: 'add' | 'load';
+  body: Task | Task[] | string;
+};

@@ -1,12 +1,18 @@
-import { useActionState, useEffect, useRef, useState, type Dispatch } from 'react';
+import {
+  useActionState,
+  useEffect,
+  useRef,
+  useState,
+  type Dispatch,
+} from 'react';
 import type { ApiReturn, Task, TaskPost } from '../types';
 import { postTask } from '../api';
 import { useTasksDispatch } from '../hooks/useTasks';
 
 type TaskAction = {
-  type: 'add' | 'load'
-  body: Task | Task[]
-}
+  type: 'add' | 'load';
+  body: Task | Task[];
+};
 
 async function addNewTask(
   _previousState: ApiReturn | null,
