@@ -65,7 +65,7 @@ export async function deleteTask(id: number) {
       console.error(error);
       return { success: false, message: error, task: null };
     }
-    if (request.status === 201) {
+    if (request.status === 204) {
       const response: Task | Task[] = await request.json();
       return {
         success: true,
