@@ -54,3 +54,35 @@ export async function postTask(task: TaskPost): Promise<ApiReturn> {
     };
   }
 }
+
+export async function deleteTask(id: number) {
+  try {
+    const request = await fetch(`${todos_url}?id=eq.${id}`, {
+      method: 'DELETE',
+    });
+    if (!request.ok) {
+      const error = await request.json();
+      console.error(error);
+      return { success: false, message: error, task: null };
+    }
+    if (request.status === 204) {
+      return {
+        success: true,
+        message: null,
+        task: null,
+      };
+    }
+    return {
+      success: false,
+      message: 'Unexpected response status',
+      task: null,
+    };
+  } catch (e) {
+    console.error(e);
+    return {
+      success: false,
+      message: e instanceof Error ? e.message : 'An unknown error occurred',
+      task: null,
+    };
+  }
+}
