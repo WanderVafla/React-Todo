@@ -5,13 +5,13 @@ export function tasksReducer(tasks, action) {
     case 'load': {
       return action.tasks;
     }
-    case 'add': {
+    case 'add': {      
       const task: Task = {
-        id: action.task.id,
-        title: action.task.title,
-        content: action.task.content,
-        due_date: action.task.due_date,
-        done: action.task.done,
+        id: action.body.id,
+        title: action.body.title,
+        content: action.body.content,
+        due_date: action.body.due_date,
+        done: action.body.done,
       };
       return [...tasks, task];
     }

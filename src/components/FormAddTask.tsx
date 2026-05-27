@@ -27,7 +27,7 @@ async function addNewTask(
   if (response.success) {
     tasksDispatch({
       type: 'add',
-      body: response.task,
+      body: Array.isArray(response.task) ? response.task[0] : response.task,
     });
   }
 
