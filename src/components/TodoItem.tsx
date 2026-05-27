@@ -11,12 +11,14 @@ export function TodoItem({ task }: { task: Task }) {
     setIsChecked(event.target.checked);
   };
 
-  const remove = () => {
-    tasksDispatch({
-      type: 'delete',
-      body: task,
-    });
-    deleteTask(task.id);
+  const remove = async () => {
+    const response = await deleteTask(task.id);
+    if (response.success) {
+      tasksDispatch({
+        type: 'delete',
+        body: task,
+      });
+    }
   };
 
   return (
