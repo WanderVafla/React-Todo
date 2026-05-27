@@ -32,7 +32,7 @@ export function TodoItem({ task }: { task: Task }) {
         <div>
           <button type="button">Edit</button>
           <button type="button" onClick={remove}>
-            Remvoe
+            Remove
           </button>
         </div>
       </span>
