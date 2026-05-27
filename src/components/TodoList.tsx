@@ -14,17 +14,21 @@ export function TodoList() {
     });
   }, [tasksDispath, tasksFromAPI]);
   return (
-    <div id="todos-list-border">
-      <SortPanel />
-      <hr />
-      {tasks && (
-        <div id="todos-list">
-          {tasks
-            ? tasks.map((task) => <TodoItem key={task.id} task={task} />)
-            : 'No task to complete.'}
+    <>
+      {Array(tasks).length < 1 ? (
+        <div id="todos-list-border">
+          <SortPanel />
+          <hr />
+          <div id="todos-list">
+            {tasks.map((task) => (
+              <TodoItem key={task.id} task={task} />
+            ))}
+          </div>
         </div>
+      ) : (
+        'No task to complete.'
       )}
-    </div>
+    </>
   );
 }
 
