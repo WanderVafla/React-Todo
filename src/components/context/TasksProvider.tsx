@@ -2,7 +2,7 @@ import { useReducer } from 'react';
 import { tasksReducer } from './taskReducer';
 import { TasksContext, TasksDispacthTasks } from './TasksContext';
 
-export function TasksReducer({ children }) {
+export function TasksProvider({ children }) {
   const [tasks, dispacth] = useReducer(tasksReducer, []);
 
   return (

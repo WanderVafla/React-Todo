@@ -2,7 +2,7 @@ import { TodoList } from './components/TodoList';
 import './App.css';
 import { FormAddTask } from './components/FormAddTask';
 import { SpinnerLoading } from './components/SpinnerLoading';
-import { TasksReducer } from './components/context/TasksProvider';
+import { TasksProvider } from './components/context/TasksProvider';
 import { Suspense } from 'react';
 
 const App = () => {
@@ -11,13 +11,13 @@ const App = () => {
       <div>Error Management Window (hidden)</div>
       <main>
         <h1>React Todos list</h1>
-        <TasksReducer>
+        <TasksProvider>
           <FormAddTask />
 
           <Suspense fallback={<SpinnerLoading />}>
             <TodoList />
           </Suspense>
-        </TasksReducer>
+        </TasksProvider>
         <button type="button">Delete All</button>
       </main>
     </>
