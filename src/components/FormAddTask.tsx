@@ -8,13 +8,13 @@ async function addNewTask(
   formData,
   tasksDispatch,
 ): Promise<ApiReturn> {
-  const taskTitle = formData.get('title');
-  const taskContent = formData.get('content');
+  const taskTitle = formData.get('title') as string;
+  const taskContent = formData.get('content') as string;
   const taskDue = formData.get('due');
 
   const newTask: TaskPost = {
-    title: taskTitle !== '' ? taskTitle : null,
-    content: taskContent ? taskContent : null,
+    title: taskTitle.trim() !== '' ? taskTitle : null,
+    content: taskContent.trim() ? taskContent : null,
     due_date: taskDue !== '' ? taskDue : null,
     done: false,
   };
@@ -24,7 +24,6 @@ async function addNewTask(
       type: 'add',
       task: response.message,
     });
-    console.log('task added 2!');
   }
 
   return response;
