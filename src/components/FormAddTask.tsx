@@ -1,16 +1,21 @@
-import { useActionState, useEffect, useRef, useState } from 'react';
-import type { ApiReturn, TaskPost } from '../types';
+import { useActionState, useEffect, useRef, useState, type Dispatch } from 'react';
+import type { ApiReturn, Task, TaskPost } from '../types';
 import { postTask } from '../api';
 import { useTasksDispatch } from '../hooks/useTasks';
 
+type TaskAction = {
+  type: 'add' | 'load'
+  body: Task | Task[]
+}
+
 async function addNewTask(
-  _previousState,
-  formData,
-  tasksDispatch,
+  _previousState: ApiReturn | null,
+  formData: FormData,
+  tasksDispatch: Dispatch<TaskAction>,
 ): Promise<ApiReturn> {
   const taskTitle = formData.get('title') as string;
   const taskContent = formData.get('content') as string;
-  const taskDue = formData.get('due');
+  const taskDue = formData.get('due') as string;
 
   const newTask: TaskPost = {
     title: taskTitle.trim() !== '' ? taskTitle : null,
@@ -22,7 +27,7 @@ async function addNewTask(
   if (response.success) {
     tasksDispatch({
       type: 'add',
-      task: response.message,
+      body: response.task,
     });
   }
 
@@ -31,7 +36,7 @@ async function addNewTask(
 
 export function FormAddTask() {
   const [isContentVisible, setIsContentVisible] = useState(false);
-  const formRef = useRef(null);
+  const formRef = useRef<HTMLFormElement | null>(null);
   const tasksDispatch = useTasksDispatch();
 
   const [, formAction, isPending] = useActionState(

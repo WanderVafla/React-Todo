@@ -30,13 +30,14 @@ export async function postTask(task: TaskPost): Promise<ApiReturn> {
     if (!request.ok) {
       const error = await request.json();
       console.error(error);
-      return { success: false, message: error };
+      return { success: false, message: error, task: null };
     }
     if (request.status === 201) {
       const reponse: Task | Task[] = await request.json();
       return {
         success: true,
-        message: Array.isArray(reponse) ? reponse[0] : reponse,
+        message: null,
+        task: Array.isArray(reponse) ? reponse[0] : reponse
       };
     }
   } catch (e) {
