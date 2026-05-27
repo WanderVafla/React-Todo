@@ -1,37 +1,34 @@
-import { useEffect, useState } from 'react';
+import { use, useEffect } from 'react';
 import { TodoItem } from './TodoItem';
-import { getTasks } from '../api';
-import type { Task } from '../types'
-import { SpinnerLoading } from './SpinnerLoading';
-
+import { tasksPromise } from '../utils';
+import { useTasks, useTasksDispatch } from '../hooks/useTasks';
 
 export function TodoList() {
-  const [tasks, setTasks] = useState<Task[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect( () => {
-    const handleTasks = async () => {
-      setTasks(await getTasks())
-      setIsLoading(false)
-    }
-    handleTasks()
-    
-  }, [])
+  const tasksDispatch = useTasksDispatch();
+  const tasks = useTasks();
+  const tasksFromAPI = use(tasksPromise);
+  useEffect(() => {
+    tasksDispatch({
+      type: 'load',
+      body: tasksFromAPI,
+    });
+  }, [tasksDispatch, tasksFromAPI]);
   return (
-    <div id="todos-list-border">
-      <SortPanel />
-      <hr />
-      <div id="todos-list">
-        {isLoading && <SpinnerLoading /> }
-        {tasks ? tasks.map(task => 
-        <TodoItem 
-        title={task.title} 
-        content={task.content} 
-        due={task.due} done={task.done} 
-        />) : 
-        "No task to complete."}
-      </div>
-    </div>
+    <>
+      {tasks.length > 0 ? (
+        <div id="todos-list-border">
+          <SortPanel />
+          <hr />
+          <div id="todos-list">
+            {tasks.map((task) => (
+              <TodoItem key={task.id} task={task} />
+            ))}
+          </div>
+        </div>
+      ) : (
+        'No task to complete.'
+      )}
+    </>
   );
 }
 

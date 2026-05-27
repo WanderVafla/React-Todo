@@ -1,18 +1,10 @@
-import { useState } from 'react';
+import { useState, type ChangeEvent } from 'react';
+import type { Task } from '../types';
 
-interface TodoType {
-  title: string;
-  done: boolean;
-  content?: string;
-  due?: string;
-}
+export function TodoItem({ task }: { task: Task }) {
+  const [isChecked, setIsChecked] = useState(task.done);
 
-export function TodoItem({ title, content, due, done }: TodoType) {
-  const [taskTitle] = useState(title);
-  const [taskContent] = useState(content)
-  const [dueDate] = useState(due)
-  const [isChecked, setIsChecked] = useState(done);
-  const handleChecked = (event) => {
+  const handleChecked = (event: ChangeEvent<HTMLInputElement>) => {
     setIsChecked(event.target.checked);
   };
 
@@ -21,15 +13,15 @@ export function TodoItem({ title, content, due, done }: TodoType) {
       <span>
         <div>
           <input type="checkbox" checked={isChecked} onChange={handleChecked} />
-          <span>{taskTitle}</span>
+          <span>{task.title}</span>
         </div>
-        <span>{!due ? 'no date' : dueDate}</span>
+        <span>{!task.due_date ? 'no date' : task.due_date}</span>
         <div>
           <button type="button">Edit</button>
           <button type="button">Remvoe</button>
         </div>
       </span>
-      <div>{taskContent && taskContent}</div>
+      <div>{task.content && task.content}</div>
     </div>
   );
 }
