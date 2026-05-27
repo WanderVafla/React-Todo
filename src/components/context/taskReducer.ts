@@ -9,7 +9,8 @@ export function tasksReducer(tasks: Task[], action: TaskAction): Task[] {
       return [...tasks, !Array.isArray(action.body) && action.body];
     }
     case 'delete': {
-      return [...tasks].filter((task) => task !== action.body);
+      const target: Task = Array.isArray(action.body) ? action.body[0] : action.body;
+      return [...tasks].filter((task) => task !== target);
     }
     default: {
       throw Error(`Unknown action: ${action.type}`);
