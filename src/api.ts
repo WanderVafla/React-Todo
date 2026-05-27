@@ -66,11 +66,10 @@ export async function deleteTask(id: number) {
       return { success: false, message: error, task: null };
     }
     if (request.status === 204) {
-      const response: Task | Task[] = await request.json();
       return {
         success: true,
         message: null,
-        task: Array.isArray(response) ? response[0] : response,
+        task: null,
       };
     }
     return {
