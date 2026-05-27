@@ -1,4 +1,4 @@
-import type { Task, TaskPost } from './types';
+import type { ApiReturn, Task, TaskPost } from './types';
 
 const todos_url = 'https://api.todos.in.jt-lab.ch/todos';
 
@@ -7,16 +7,17 @@ export async function getTasks(): Promise<Task[]> {
     const request = await fetch(`${todos_url}`, {
       method: 'GET',
     });
-    if (request.ok) {
+    if (!request.ok) {
       return await request.json();
     }
+    return await request.json();
   } catch (e) {
     console.error(e);
     return [];
   }
 }
 
-export async function postTask(task: TaskPost): Promise<Task> {
+export async function postTask(task: TaskPost): Promise<ApiReturn> {
   try {
     const request = await fetch(`${todos_url}`, {
       method: 'POST',
@@ -29,12 +30,18 @@ export async function postTask(task: TaskPost): Promise<Task> {
     if (!request.ok) {
       const error = await request.json();
       console.error(error);
+      return { success: false, message: error };
     }
     if (request.status === 201) {
       const reponse: Task | Task[] = await request.json();
-      return Array.isArray(reponse) ? reponse[0] : reponse;
+      return {
+        success: true,
+        message: Array.isArray(reponse) ? reponse[0] : reponse,
+      };
     }
   } catch (e) {
+    console.log('error post');
+
     console.error(e);
   }
 }

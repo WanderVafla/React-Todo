@@ -1,44 +1,49 @@
-import React, { useEffect, useRef, useState } from 'react';
-import type { TaskPost } from '../types';
+import { useActionState, useEffect, useRef, useState } from 'react';
+import type { ApiReturn, TaskPost } from '../types';
 import { postTask } from '../api';
+import { useTasksDispatch } from '../hooks/useTasks';
 
-export function FormAddTask({ handlerTasks }) {
+async function addNewTask(
+  _previousState,
+  formData,
+  tasksDispatch,
+): Promise<ApiReturn> {
+  const taskTitle = formData.get('title');
+  const taskContent = formData.get('content');
+  const taskDue = formData.get('due');
+
+  const newTask: TaskPost = {
+    title: taskTitle !== '' ? taskTitle : null,
+    content: taskContent ? taskContent : null,
+    due_date: taskDue !== '' ? taskDue : null,
+    done: false,
+  };
+  const response: ApiReturn = await postTask(newTask);
+  if (response.success) {
+    tasksDispatch({
+      type: 'add',
+      task: response.message,
+    });
+    console.log('task added 2!');
+  }
+
+  return response;
+}
+
+export function FormAddTask() {
   const [isContentVisible, setIsContentVisible] = useState(false);
   const formRef = useRef(null);
+  const tasksDispatch = useTasksDispatch();
 
-  const [taskTitle, setTaskTitle] = useState<string>('');
-  const [taskContent, setTaskContent] = useState<string>('');
-  const [dueDate, setDueDate] = useState<string>('');
-
-  const handleTaskTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTaskTitle(event.target.value);
-  };
-  const handleTaskContent = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setTaskContent(event.target.value);
-  };
-  const handleTaskDueDate = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDueDate(event.target.value);
-  };
-
-  const cleanForm = () => {
-    setTaskTitle('');
-    setTaskContent('');
-    setDueDate('');
-    console.log('cleaned');
-  };
-
-  const sendNewTask = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    const newTask: TaskPost = {
-      title: taskTitle,
-      content: taskContent ? taskContent : null,
-      due_date: dueDate,
-      done: false,
-    };
-    const taskReturn = await postTask(newTask);
-    handlerTasks(taskReturn);
-    cleanForm();
-  };
+  const [, formAction, isPending] = useActionState(
+    (previousState, formData) =>
+      addNewTask(previousState, formData, tasksDispatch),
+    {
+      success: null,
+      message: '',
+      task: null,
+    },
+  );
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -58,27 +63,25 @@ export function FormAddTask({ handlerTasks }) {
   }, []);
 
   return (
-    <form ref={formRef} id="form-add-task">
+    <form ref={formRef} action={formAction} id="form-add-task">
       <input
         type="text"
         id="title-task-input"
-        value={taskTitle}
+        name="title"
         placeholder="Todo name ..."
-        onChange={handleTaskTitle}
       />
       {isContentVisible && (
         <>
           <textarea
             id="description-area"
             placeholder="Desctiption ..."
-            value={taskContent}
-            onChange={handleTaskContent}
+            name="content"
           ></textarea>
           <div>
-            <button type="submit" onClick={sendNewTask}>
+            <button type="submit" disabled={isPending}>
               Submit
             </button>
-            <input type="date" value={dueDate} onChange={handleTaskDueDate} />
+            <input type="date" name="due" />
           </div>
         </>
       )}

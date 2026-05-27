@@ -8,3 +8,8 @@ export interface TaskPost {
 export interface Task extends TaskPost {
   id: number;
 }
+
+export interface ApiReturn {
+  success: boolean;
+  message: Task | string;
+}

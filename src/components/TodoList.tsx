@@ -1,31 +1,24 @@
-import { useEffect, useState, type Dispatch } from 'react';
+import { use, useEffect } from 'react';
 import { TodoItem } from './TodoItem';
-import { getTasks } from '../api';
-import type { Task } from '../types';
-import { SpinnerLoading } from './SpinnerLoading';
+import { promisTasks } from '../utils';
+import { useTasks, useTasksDispatch } from '../hooks/useTasks';
 
-export function TodoList({
-  tasks,
-  setTasks,
-}: {
-  tasks: Task[];
-  setTasks: Dispatch<React.SetStateAction<Task[]>>;
-}) {
-  const [isLoading, setIsLoading] = useState(true);
-
+export function TodoList() {
+  const tasksDispath = useTasksDispatch();
+  const tasks = useTasks();
+  const tasksFromAPI = use(promisTasks);
   useEffect(() => {
-    const handleTasks = async () => {
-      setTasks(await getTasks());
-      setIsLoading(false);
-    };
-    handleTasks();
-  }, [setTasks]);
+    tasksDispath({
+      type: 'load',
+      tasks: tasksFromAPI,
+    });
+  }, [tasksDispath, tasksFromAPI]);
   return (
     <div id="todos-list-border">
       <SortPanel />
       <hr />
+
       <div id="todos-list">
-        {isLoading && <SpinnerLoading />}
         {tasks
           ? tasks.map((task) => (
               <TodoItem
