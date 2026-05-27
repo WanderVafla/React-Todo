@@ -12,9 +12,8 @@ const App = () => {
       <main>
         <h1>React Todos list</h1>
         <TasksProvider>
-          <FormAddTask />
-
           <Suspense fallback={<SpinnerLoading />}>
+            <FormAddTask />
             <TodoList />
           </Suspense>
         </TasksProvider>
