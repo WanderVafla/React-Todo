@@ -19,7 +19,7 @@ export function tasksReducer(tasks: Task[], action: TaskAction): Task[] {
         ? action.body[0]
         : action.body;
 
-      const a = [...tasks].map((task) => {
+      const a = tasks.map((task) => {
         if (task.id === target.id) {
           return target;
         }
