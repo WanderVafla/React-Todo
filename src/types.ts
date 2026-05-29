@@ -16,6 +16,6 @@ export type ApiReturn = {
 };
 
 export type TaskAction = {
-  type: 'add' | 'load' | 'delete';
+  type: 'add' | 'load' | 'delete' | 'change';
   body: Task | Task[];
 };
