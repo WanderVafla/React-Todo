@@ -102,16 +102,17 @@ export async function patchTask(id: number, body: Partial<Task>) {
 
     if (!request.ok) {
       console.error(response);
-      return { success: false, message: response, task: null };
+      const errorMessage = typeof response === 'object' && response !== null && 'message' in response 
+      ? String(response.message)
+      : JSON.stringify(response)
+      return { success: false, message: errorMessage, task: null };
     }
 
-    if (request.ok) {
       return {
         success: true,
         message: null,
         task: response,
       };
-    }
     return {
       success: false,
       message: 'Unexpected response status',
