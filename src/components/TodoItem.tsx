@@ -88,43 +88,7 @@ export function TodoItem({ task }: { task: Task }) {
       return;
     }
   };
-
-  // const handleText = (
-  //   event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  // ) => {
-  //   const target = event.target;
-  //   const content = target.value;
-  // };
-
-  // return (
-  //   <div className="todo-item">
-  //     <span>
-  //       <div>
-  //         <input type="checkbox" checked={isChecked} onChange={handleChecked} />
-  //         {isEditing
-  //           ? <input type="text" value={task.title} />
-  //           : <span>{task.title}</span>
-  //         }
-  //       </div>
-  //       {isEditing
-  //         ? <input type="date" value={task.due_date} />
-  //         :  <span>{!task.due_date ? 'no date' : task.due_date}</span>
-  //       }
-  //       <div>
-  //         {}
-  //         <button type="button" onClick={handleEditing}>{isEditing ? 'Save' : 'Edit'}</button>
-  //         <button type="button" onClick={remove}>
-  //           Remove
-  //         </button>
-  //       </div>
-  //     </span>
-  //     {isEditing
-  //       ? <textarea value={task.content}></textarea>
-  //       :  <div>{task.content && task.content}</div>
-  //     }
-  //   </div>
-  // );
-
+  
   return (
     <>
       {!isEditing ? (
