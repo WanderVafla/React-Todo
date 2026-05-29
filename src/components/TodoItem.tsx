@@ -18,7 +18,7 @@ async function updateTask(
   const taskContent = formData.get('content') as string | null;
   const taskDue = formData.get('due') as string | null;
 
-  const id = previousState.message;
+  const id = previousState?.message;
   if (!id) {
     return {
       success: false,
@@ -36,7 +36,7 @@ async function updateTask(
 
   const newTask: Partial<Task> = {
     title: taskTitle,
-    content: taskContent.trim() ? taskContent : null,
+    content: taskContent?.trim() ? taskContent : null,
     due_date: taskDue !== '' ? taskDue : null,
   };
   const response: ApiReturn = await patchTask(Number(id), newTask);
@@ -65,7 +65,7 @@ export function TodoItem({ task }: { task: Task }) {
       updateTask(previousState, formData, tasksDispatch),
     {
       success: null,
-      message: task.id,
+      message: String(task.id),
       task: task,
     },
   );
@@ -99,10 +99,7 @@ export function TodoItem({ task }: { task: Task }) {
   };
 
   const toggleEditing = async () => {
-    if (!isEditing) {
       setIsEditing((prev) => !prev);
-      return;
-    }
   };
 
   return (
@@ -145,7 +142,7 @@ export function TodoItem({ task }: { task: Task }) {
               </div>
               <input type="date" name="due" defaultValue={task.due_date} />
               <div>
-                <button type="submit" onClick={toggleEditing}>
+                <button type="submit">
                   Save
                 </button>
                 <button type='button' onClick={toggleEditing}>
