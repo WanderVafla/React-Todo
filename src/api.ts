@@ -113,11 +113,6 @@ export async function patchTask(id: number, body: Partial<Task>) {
         message: null,
         task: response,
       };
-    return {
-      success: false,
-      message: 'Unexpected response status',
-      task: null,
-    };
   } catch (e) {
     console.error(e);
     return {
