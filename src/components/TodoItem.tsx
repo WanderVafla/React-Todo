@@ -1,9 +1,9 @@
-import { useActionState, useState, type Dispatch } from 'react';
+import { useActionState, useEffect, useState, type ChangeEvent, type Dispatch } from 'react';
 import type { ApiReturn, Task, TaskAction } from '../types';
 import { useTasksDispatch } from '../hooks/useTasks';
 import { deleteTask, patchTask } from '../api';
 
-async function addNewTask(
+async function updateTask(
   previousState: ApiReturn | null,
   formData: FormData,
   tasksDispatch: Dispatch<TaskAction>,
@@ -14,24 +14,19 @@ async function addNewTask(
 
   const id = previousState.message;
 
-  // const target: Task = Array.isArray(previousState.task)
-  //       ? previousState.task[0]
-  //       : previousState.task;
-
   const newTask: Partial<Task> = {
     title: taskTitle.trim() !== '' ? taskTitle : null,
     content: taskContent.trim() ? taskContent : null,
     due_date: taskDue !== '' ? taskDue : null,
-    // done: false,
   };
   const response: ApiReturn = await patchTask(Number(id), newTask);
 
-  if (response.success) {
-    tasksDispatch({
-      type: 'change',
-      body: response.task,
-    });
-  }
+    if (response.success) {
+      tasksDispatch({
+        type: 'change',
+        body: response.task,
+      });
+    }
 
   return {
     success: response.success,
@@ -47,17 +42,19 @@ export function TodoItem({ task }: { task: Task }) {
 
   const [state, formAction, _isPending] = useActionState(
     (previousState, formData) =>
-      addNewTask(previousState, formData, tasksDispatch),
+      updateTask(previousState, formData, tasksDispatch),
     {
       success: null,
       message: task.id,
       task: task,
     },
   );
+  useEffect(() => {
 
-  if (state.success === true) {
-    setIsEdititng(false);
-  }
+    if (state.success === true) {
+      setIsEdititng(false);
+    }
+  }, [state])
 
   const handleChecked = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const target = event.target.checked;
@@ -83,12 +80,12 @@ export function TodoItem({ task }: { task: Task }) {
   };
 
   const handleEditing = async () => {
-    if (isEditing) {
+    if (!isEditing) {
       setIsEdititng(true);
       return;
     }
   };
-  
+
   return (
     <>
       {!isEditing ? (
@@ -106,7 +103,7 @@ export function TodoItem({ task }: { task: Task }) {
             <span>{!task.due_date ? 'no date' : task.due_date}</span>
             <div>
               <button type="button" onClick={handleEditing}>
-                Save
+                Edit
               </button>
               <button type="button" onClick={remove}>
                 Remove
@@ -125,20 +122,17 @@ export function TodoItem({ task }: { task: Task }) {
                   checked={isChecked}
                   onChange={handleChecked}
                 />
-                <input type="text" name="title" />
+                <input type="text" name="title" defaultValue={task.title} />
               </div>
-              <input type="date" name="due" />
+              <input type="date" name="due" defaultValue={task.due_date} />
               <div>
                 <button type="submit" onClick={handleEditing}>
-                  Edit
-                </button>
-                <button type="button" onClick={remove}>
-                  Remove
+                  Save
                 </button>
               </div>
             </span>
 
-            <textarea name="content"></textarea>
+            <textarea name="content" defaultValue={task.content} ></textarea>
           </div>
         </form>
       )}
