@@ -1,4 +1,10 @@
-import { useActionState, useEffect, useState, type ChangeEvent, type Dispatch } from 'react';
+import {
+  useActionState,
+  useEffect,
+  useState,
+  type ChangeEvent,
+  type Dispatch,
+} from 'react';
 import type { ApiReturn, Task, TaskAction } from '../types';
 import { useTasksDispatch } from '../hooks/useTasks';
 import { deleteTask, patchTask } from '../api';
@@ -8,25 +14,39 @@ async function updateTask(
   formData: FormData,
   tasksDispatch: Dispatch<TaskAction>,
 ) {
-  const taskTitle = formData.get('title') as string;
-  const taskContent = formData.get('content') as string;
-  const taskDue = formData.get('due') as string;
+  const taskTitle = formData.get('title') as string | null;
+  const taskContent = formData.get('content') as string | null;
+  const taskDue = formData.get('due') as string | null;
 
   const id = previousState.message;
+  if (!id) {
+    return {
+      success: false,
+      message: 'Task ID is missing',
+      task: null
+    }
+  }
+
+  if (taskTitle === null || taskTitle.trim() === '' ) {
+    return {
+      success: false,
+      message: 'Missing Title of task'
+    }
+  }
 
   const newTask: Partial<Task> = {
-    title: taskTitle.trim() !== '' ? taskTitle : null,
+    title: taskTitle,
     content: taskContent.trim() ? taskContent : null,
     due_date: taskDue !== '' ? taskDue : null,
   };
   const response: ApiReturn = await patchTask(Number(id), newTask);
 
-    if (response.success) {
-      tasksDispatch({
-        type: 'change',
-        body: response.task,
-      });
-    }
+  if (response.success && response.task) {
+    tasksDispatch({
+      type: 'change',
+      body: response.task,
+    });
+  }
 
   return {
     success: response.success,
@@ -37,7 +57,7 @@ async function updateTask(
 
 export function TodoItem({ task }: { task: Task }) {
   const [isChecked, setIsChecked] = useState(task.done);
-  const [isEditing, setIsEdititng] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const tasksDispatch = useTasksDispatch();
 
   const [state, formAction, _isPending] = useActionState(
@@ -50,11 +70,10 @@ export function TodoItem({ task }: { task: Task }) {
     },
   );
   useEffect(() => {
-
     if (state.success === true) {
-      setIsEdititng(false);
+      setIsEditing(false);
     }
-  }, [state])
+  }, [state]);
 
   const handleChecked = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const target = event.target.checked;
@@ -79,9 +98,9 @@ export function TodoItem({ task }: { task: Task }) {
     }
   };
 
-  const handleEditing = async () => {
+  const toggleEditing = async () => {
     if (!isEditing) {
-      setIsEdititng(true);
+      setIsEditing((prev) => !prev);
       return;
     }
   };
@@ -102,7 +121,7 @@ export function TodoItem({ task }: { task: Task }) {
             </div>
             <span>{!task.due_date ? 'no date' : task.due_date}</span>
             <div>
-              <button type="button" onClick={handleEditing}>
+              <button type="button" onClick={toggleEditing}>
                 Edit
               </button>
               <button type="button" onClick={remove}>
@@ -126,13 +145,16 @@ export function TodoItem({ task }: { task: Task }) {
               </div>
               <input type="date" name="due" defaultValue={task.due_date} />
               <div>
-                <button type="submit" onClick={handleEditing}>
+                <button type="submit" onClick={toggleEditing}>
                   Save
+                </button>
+                <button type='button' onClick={toggleEditing}>
+                  Cancel
                 </button>
               </div>
             </span>
 
-            <textarea name="content" defaultValue={task.content} ></textarea>
+            <textarea name="content" defaultValue={task.content}></textarea>
           </div>
         </form>
       )}
