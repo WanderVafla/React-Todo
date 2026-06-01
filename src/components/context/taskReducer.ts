@@ -19,7 +19,7 @@ export function tasksReducer(tasks: Task[], action: TaskAction): Task[] {
         ? action.body[0]
         : action.body;
 
-      const a = tasks.map((task) => {
+      const updatedTasks = tasks.map((task) => {
         if (task.id === target.id) {
           return target;
         }
@@ -27,7 +27,7 @@ export function tasksReducer(tasks: Task[], action: TaskAction): Task[] {
         return task;
       });
 
-      return a;
+      return updatedTasks;
     }
     default: {
       throw Error(`Unknown action: ${action.type}`);
