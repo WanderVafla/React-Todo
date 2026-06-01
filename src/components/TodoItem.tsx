@@ -1,8 +1,6 @@
 import {
   useActionState,
-  useEffect,
   useState,
-  type ChangeEvent,
   type Dispatch,
 } from 'react';
 import type { ApiReturn, Task, TaskAction } from '../types';
@@ -13,6 +11,7 @@ async function updateTask(
   previousState: ApiReturn | null,
   formData: FormData,
   tasksDispatch: Dispatch<TaskAction>,
+  setIsEditing: Dispatch<boolean>
 ) {
   const taskTitle = formData.get('title') as string | null;
   const taskContent = formData.get('content') as string | null;
@@ -47,7 +46,7 @@ async function updateTask(
       body: response.task,
     });
   }
-
+  setIsEditing(false)
   return {
     success: response.success,
     message: id,
@@ -60,21 +59,16 @@ export function TodoItem({ task }: { task: Task }) {
   const [isEditing, setIsEditing] = useState(false);
   const tasksDispatch = useTasksDispatch();
 
-  const [state, formAction, _isPending] = useActionState(
+  const [_state, formAction, _isPending] = useActionState(
     (previousState, formData) =>
-      updateTask(previousState, formData, tasksDispatch),
+      updateTask(previousState, formData, tasksDispatch, setIsEditing),
     {
       success: false,
       message: String(task.id),
       task: task,
     },
   );
-  useEffect(() => {
-    if (state.success === true) {
-      setIsEditing(false);
-    }
-  }, [state]);
-
+  
   const handleChecked = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const target = event.target.checked;
     setIsChecked(target);
