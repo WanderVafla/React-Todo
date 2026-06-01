@@ -64,7 +64,7 @@ export function TodoItem({ task }: { task: Task }) {
     (previousState, formData) =>
       updateTask(previousState, formData, tasksDispatch),
     {
-      success: null,
+      success: false,
       message: String(task.id),
       task: task,
     },
