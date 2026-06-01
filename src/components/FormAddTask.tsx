@@ -40,7 +40,7 @@ export function FormAddTask() {
   const formRef = useRef<HTMLFormElement | null>(null);
   const tasksDispatch = useTasksDispatch();
 
-  const [, formAction, isPending] = useActionState(
+  const [_state, formAction, isPending] = useActionState(
     (previousState, formData) =>
       addNewTask(previousState, formData, tasksDispatch),
     {

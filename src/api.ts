@@ -86,3 +86,42 @@ export async function deleteTask(id: number) {
     };
   }
 }
+
+export async function patchTask(id: number, body: Partial<Task>) {
+  try {
+    const request = await fetch(`${todos_url}?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Prefer: 'return=representation',
+        Accept: 'application/vnd.pgrst.object+json',
+      },
+      body: JSON.stringify(body),
+    });
+    const response = await request.json();
+
+    if (!request.ok) {
+      console.error(response);
+      const errorMessage =
+        typeof response === 'object' &&
+        response !== null &&
+        'message' in response
+          ? String(response.message)
+          : JSON.stringify(response);
+      return { success: false, message: errorMessage, task: null };
+    }
+
+    return {
+      success: true,
+      message: null,
+      task: response,
+    };
+  } catch (e) {
+    console.error(e);
+    return {
+      success: false,
+      message: e instanceof Error ? e.message : 'An unknown error occurred',
+      task: null,
+    };
+  }
+}
