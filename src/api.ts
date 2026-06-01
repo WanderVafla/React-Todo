@@ -102,17 +102,20 @@ export async function patchTask(id: number, body: Partial<Task>) {
 
     if (!request.ok) {
       console.error(response);
-      const errorMessage = typeof response === 'object' && response !== null && 'message' in response 
-      ? String(response.message)
-      : JSON.stringify(response)
+      const errorMessage =
+        typeof response === 'object' &&
+        response !== null &&
+        'message' in response
+          ? String(response.message)
+          : JSON.stringify(response);
       return { success: false, message: errorMessage, task: null };
     }
 
-      return {
-        success: true,
-        message: null,
-        task: response,
-      };
+    return {
+      success: true,
+      message: null,
+      task: response,
+    };
   } catch (e) {
     console.error(e);
     return {

@@ -1,8 +1,4 @@
-import {
-  useActionState,
-  useState,
-  type Dispatch,
-} from 'react';
+import { useActionState, useState, type Dispatch } from 'react';
 import type { ApiReturn, Task, TaskAction } from '../types';
 import { useTasksDispatch } from '../hooks/useTasks';
 import { deleteTask, patchTask } from '../api';
@@ -11,7 +7,7 @@ async function updateTask(
   previousState: ApiReturn | null,
   formData: FormData,
   tasksDispatch: Dispatch<TaskAction>,
-  setIsEditing: Dispatch<boolean>
+  setIsEditing: Dispatch<boolean>,
 ) {
   const taskTitle = formData.get('title') as string | null;
   const taskContent = formData.get('content') as string | null;
@@ -22,15 +18,15 @@ async function updateTask(
     return {
       success: false,
       message: 'Task ID is missing',
-      task: null
-    }
+      task: null,
+    };
   }
 
-  if (taskTitle === null || taskTitle.trim() === '' ) {
+  if (taskTitle === null || taskTitle.trim() === '') {
     return {
       success: false,
-      message: 'Missing Title of task'
-    }
+      message: 'Missing Title of task',
+    };
   }
 
   const newTask: Partial<Task> = {
@@ -46,7 +42,7 @@ async function updateTask(
       body: response.task,
     });
   }
-  setIsEditing(false)
+  setIsEditing(false);
   return {
     success: response.success,
     message: id,
@@ -68,7 +64,7 @@ export function TodoItem({ task }: { task: Task }) {
       task: task,
     },
   );
-  
+
   const handleChecked = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const target = event.target.checked;
     setIsChecked(target);
@@ -93,7 +89,7 @@ export function TodoItem({ task }: { task: Task }) {
   };
 
   const toggleEditing = async () => {
-      setIsEditing((prev) => !prev);
+    setIsEditing((prev) => !prev);
   };
 
   return (
@@ -136,10 +132,8 @@ export function TodoItem({ task }: { task: Task }) {
               </div>
               <input type="date" name="due" defaultValue={task.due_date} />
               <div>
-                <button type="submit">
-                  Save
-                </button>
-                <button type='button' onClick={toggleEditing}>
+                <button type="submit">Save</button>
+                <button type="button" onClick={toggleEditing}>
                   Cancel
                 </button>
               </div>
