@@ -1,30 +1,31 @@
 import { useEffect, useState, type ChangeEvent } from "react";
 import type { SortDoned, SortOption } from "../../types";
 import { useTasksDispatch } from "../../hooks/useTasks";
+import { OrderDoned, OrderName, TaskActionTypes } from "../../constants";
 
+// This are the constants they not change!
+const sortsDoned: SortDoned[] = Object.values(OrderDoned)
+const sortsOptions: SortOption[] = Object.values(OrderName)
+console.log(Object.values(OrderDoned));
 
-const sortDonedTask: SortDoned[] = [0, 1, 2] as const
-// const sortsOptions: SortsOptions[] = ['newest', 'due date', 'name', ...sortDonedTask] as const
-const sortsOptions: SortOption[] = ['newest', 'due date', 'name'] as const
-let sortDonedTaskTarget: number = 0
+let sortDonedTaskTarget = 0
 
 export function SortPanel() {
-    const tasksDispatch = useTasksDispatch();
-
-    const [selectedOption, setSelectedOption] = useState<SortOption>(sortsOptions[0])
-    const [stateOrederDoned, setStateOrderDoned] = useState<SortDoned>(sortDonedTask[sortDonedTaskTarget])
-    const handleStateOrderDoned = () => {
+  const tasksDispatch = useTasksDispatch();
+  
+  const [selectedOption, setSelectedOption] = useState<SortOption>(sortsOptions[0])
+  const [stateOrederDoned, setStateOrderDoned] = useState<SortDoned>(sortsDoned[sortDonedTaskTarget])
+  const handleStateOrderDoned = () => {
       sortDonedTaskTarget += 1
       if (sortDonedTaskTarget > 2) {
         sortDonedTaskTarget = 0
       }
-      // console.log(sortDonedTaskTarget);
       
-      setStateOrderDoned(sortDonedTask[sortDonedTaskTarget])
+      setStateOrderDoned(sortsDoned[sortDonedTaskTarget])
     }
     useEffect(() => {
       tasksDispatch({
-        type: 'order',
+        type: TaskActionTypes.order,
         order: {
           type: selectedOption, 
           doned: stateOrederDoned
@@ -39,8 +40,14 @@ export function SortPanel() {
     
   return (
     <div id="todos-list-options">
-      <label htmlFor="">undone:</label>
-      <button type="button" onClick={handleStateOrderDoned}></button>
+      <label htmlFor="">done:</label>
+      <button type="button" onClick={handleStateOrderDoned}>
+        {(()=> {
+          if (stateOrederDoned === OrderDoned.none) return OrderDoned.none;
+          if (stateOrederDoned === OrderDoned.trueUp) return OrderDoned.trueUp;
+          if (stateOrederDoned === OrderDoned.falseDown) return OrderDoned.falseDown;
+        })()} 
+      </button>
 
       <select name="sort-select" id="" onChange={handleSelectedOption}>
         {sortsOptions.map((sortOption) => <option key={sortOption}>{sortOption}</option>)}

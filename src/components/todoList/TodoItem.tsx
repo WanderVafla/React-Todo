@@ -2,6 +2,7 @@ import { useActionState, useState, type Dispatch } from 'react';
 import type { ApiReturn, Task, TaskAction } from '../../types';
 import { useTasksDispatch } from '../../hooks/useTasks';
 import { deleteTask, patchTask } from '../../api';
+import { TaskActionTypes } from '../../constants';
 
 async function updateTask(
   previousState: ApiReturn | null,
@@ -38,7 +39,7 @@ async function updateTask(
 
   if (response.success && response.task) {
     tasksDispatch({
-      type: 'change',
+      type: TaskActionTypes.change,
       body: response.task,
     });
   }
@@ -72,7 +73,7 @@ export function TodoItem({ task }: { task: Task }) {
     const response = await patchTask(task.id, { done: target });
     if (response.success) {
       tasksDispatch({
-        type: 'change',
+        type: TaskActionTypes.change,
         body: task,
       });
     }
@@ -82,7 +83,7 @@ export function TodoItem({ task }: { task: Task }) {
     const response = await deleteTask(task.id);
     if (response.success) {
       tasksDispatch({
-        type: 'delete',
+        type: TaskActionTypes.delete,
         body: task,
       });
     }

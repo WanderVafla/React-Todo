@@ -1,20 +1,21 @@
+import { OrderDoned, OrderName, TaskActionTypes } from '../../constants';
 import type { SortDoned, Task, TaskAction } from '../../types';
 
 export function tasksReducer(tasks: Task[], action: TaskAction): Task[] {
   switch (action.type) {
-    case 'load': {
+    case TaskActionTypes.load: {
       return Array.isArray(action.body) && action.body;
     }
-    case 'add': {
+    case TaskActionTypes.add: {
       return [!Array.isArray(action.body) && action.body, ...tasks];
     }
-    case 'delete': {
+    case TaskActionTypes.delete: {
       const target: Task = Array.isArray(action.body)
         ? action.body[0]
         : action.body;
       return [...tasks].filter((task) => task !== target);
     }
-    case 'change': {
+    case TaskActionTypes.change: {
       const target: Task = Array.isArray(action.body)
         ? action.body[0]
         : action.body;
@@ -29,19 +30,19 @@ export function tasksReducer(tasks: Task[], action: TaskAction): Task[] {
 
       return updatedTasks;
     }
-    case 'order': {
+    case TaskActionTypes.order: {
       switch (action.order.type) {
-        case 'newest' : {
+        case OrderName.newest : {
           // console.log(tasks.sort((a, b) => a.id - b.id));
           const orderedTasks = [...tasks].sort((a, b) => a.id - b.id)
           return sortTasksByDoned(action.order.doned, orderedTasks)
         }
-        case 'name': {
+        case OrderName.name: {
           console.log(tasks.sort((a, b) => a.id - b.id));
           const orderedTasks = [...tasks].sort((a, b) => a.title.localeCompare(b.title));
           return sortTasksByDoned(action.order.doned, orderedTasks)
         }
-        case 'due date': { 
+        case OrderName.time: { 
           const orderedTasks = [...tasks].sort((a, b) => {
             if (a.due_date && b.due_date) {
               const dateA = new Date(a.due_date).getTime()
@@ -68,9 +69,9 @@ export function tasksReducer(tasks: Task[], action: TaskAction): Task[] {
 
 function sortTasksByDoned(orderDoned: SortDoned, tasks: Task[]): Task[] {
   console.log(orderDoned, tasks);
-  if (orderDoned === 1) {
+  if (orderDoned === OrderDoned.trueUp) {
     return tasks.sort((a, b) => Number(b.done) - Number(a.done))
-  } else if (orderDoned === 2) {
+  } else if (orderDoned === OrderDoned.falseDown) {
     return tasks.sort((a, b) => Number(a.done) - Number(b.done))
   }
   return tasks
