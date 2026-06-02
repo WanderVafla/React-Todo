@@ -14,11 +14,12 @@ export type ApiReturn = {
   message: string | null;
   task: Task | Task[] | null;
 };
-
-export type SortsOptions = ('newest' | 'due date' | 'name')
+export type SortDoned = (0 | 1 | 2)
+export type SortOption = ('newest' | 'due date' | 'name')
+export type SortType = {type: SortOption; doned: SortDoned}
 
 export type TaskAction = {
   type: 'add' | 'load' | 'delete' | 'change' | 'order';
   body?: Task | Task[];
-  order?: SortsOptions;
+  order?: SortType;
 };

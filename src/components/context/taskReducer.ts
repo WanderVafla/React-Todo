@@ -1,4 +1,4 @@
-import type { Task, TaskAction } from '../../types';
+import type { SortDoned, Task, TaskAction } from '../../types';
 
 export function tasksReducer(tasks: Task[], action: TaskAction): Task[] {
   switch (action.type) {
@@ -30,23 +30,19 @@ export function tasksReducer(tasks: Task[], action: TaskAction): Task[] {
       return updatedTasks;
     }
     case 'order': {
-      switch (action.order) {
+      switch (action.order.type) {
         case 'newest' : {
-          console.log(tasks.sort((a, b) => a.id - b.id));
-          return [...tasks].sort((a, b) => a.id - b.id)
+          // console.log(tasks.sort((a, b) => a.id - b.id));
+          const orderedTasks = [...tasks].sort((a, b) => a.id - b.id)
+          return sortTasksByDoned(action.order.doned, orderedTasks)
         }
         case 'name': {
           console.log(tasks.sort((a, b) => a.id - b.id));
-          return [...tasks].sort((a, b) => a.title.localeCompare(b.title));
+          const orderedTasks = [...tasks].sort((a, b) => a.title.localeCompare(b.title));
+          return sortTasksByDoned(action.order.doned, orderedTasks)
         }
-        case 'due date': {
-          console.log(tasks.sort((a, b) => {
-            const dateA = new Date(a.due_date).getTime()
-            const dateB = new Date(b.due_date).getTime()
-            return dateA - dateB
-          }));
-          
-          return [...tasks].sort((a, b) => {
+        case 'due date': { 
+          const orderedTasks = [...tasks].sort((a, b) => {
             if (a.due_date && b.due_date) {
               const dateA = new Date(a.due_date).getTime()
               const dateB = new Date(b.due_date).getTime()
@@ -56,6 +52,7 @@ export function tasksReducer(tasks: Task[], action: TaskAction): Task[] {
             }
             
           })
+          return sortTasksByDoned(action.order.doned, orderedTasks)
         }
         default: {
           throw Error(`Unknown SortType: ${action.order}`);
@@ -67,4 +64,14 @@ export function tasksReducer(tasks: Task[], action: TaskAction): Task[] {
       throw Error(`Unknown action: ${action.type}`);
     }
   }
+}
+
+function sortTasksByDoned(orderDoned: SortDoned, tasks: Task[]): Task[] {
+  console.log(orderDoned, tasks);
+  if (orderDoned === 1) {
+    return tasks.sort((a, b) => Number(b.done) - Number(a.done))
+  } else if (orderDoned === 2) {
+    return tasks.sort((a, b) => Number(a.done) - Number(b.done))
+  }
+  return tasks
 }
