@@ -1,4 +1,4 @@
-import { TodoList } from './components/TodoList';
+import { TodoList } from './components/todoList/TodoList';
 import './App.css';
 import { FormAddTask } from './components/FormAddTask';
 import { SpinnerLoading } from './components/SpinnerLoading';

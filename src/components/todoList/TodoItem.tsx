@@ -1,7 +1,7 @@
 import { useActionState, useState, type Dispatch } from 'react';
-import type { ApiReturn, Task, TaskAction } from '../types';
-import { useTasksDispatch } from '../hooks/useTasks';
-import { deleteTask, patchTask } from '../api';
+import type { ApiReturn, Task, TaskAction } from '../../types';
+import { useTasksDispatch } from '../../hooks/useTasks';
+import { deleteTask, patchTask } from '../../api';
 
 async function updateTask(
   previousState: ApiReturn | null,

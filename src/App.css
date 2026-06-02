@@ -135,3 +135,9 @@ main {
 #form-task-content {
   display: none;
 }
+
+#todos-list-options {
+  display: flex;
+  justify-content: flex-end;
+  width: 50vw;
+}

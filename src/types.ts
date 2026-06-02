@@ -15,7 +15,10 @@ export type ApiReturn = {
   task: Task | Task[] | null;
 };
 
+export type SortsOptions = ('newest' | 'due date' | 'name')
+
 export type TaskAction = {
-  type: 'add' | 'load' | 'delete' | 'change';
-  body: Task | Task[];
+  type: 'add' | 'load' | 'delete' | 'change' | 'order';
+  body?: Task | Task[];
+  order?: SortsOptions;
 };

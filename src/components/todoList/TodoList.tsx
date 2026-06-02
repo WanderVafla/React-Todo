@@ -1,7 +1,8 @@
 import { use, useEffect } from 'react';
 import { TodoItem } from './TodoItem';
-import { tasksPromise } from '../utils';
-import { useTasks, useTasksDispatch } from '../hooks/useTasks';
+import { tasksPromise } from '../../utils';
+import { useTasks, useTasksDispatch } from '../../hooks/useTasks';
+import { SortPanel } from './SortPanel';
 
 export function TodoList() {
   const tasksDispatch = useTasksDispatch();
@@ -13,11 +14,13 @@ export function TodoList() {
       body: tasksFromAPI,
     });
   }, [tasksDispatch, tasksFromAPI]);
+  console.log(tasks);
+  
   return (
     <>
       {tasks.length > 0 ? (
         <div id="todos-list-border">
-          <SortPanel />
+            <SortPanel />
           <hr />
           <div id="todos-list">
             {tasks.map((task) => (
@@ -32,17 +35,4 @@ export function TodoList() {
   );
 }
 
-function SortPanel() {
-  return (
-    <div id="todos-list-options">
-      <label htmlFor="">undone:</label>
-      <input type="checkbox" />
 
-      <select name="sort-select" id="">
-        <option value="">sort</option>
-        <option value="due date">due date</option>
-        <option value="name">name</option>
-      </select>
-    </div>
-  );
-}
