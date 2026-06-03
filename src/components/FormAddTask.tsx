@@ -37,8 +37,10 @@ async function addNewTask(
 }
 
 export function FormAddTask() {
+  // this need for animation
   const [isContentVisible, setIsContentVisible] = useState(false);
   const formRef = useRef<HTMLFormElement | null>(null);
+
   const tasksDispatch = useTasksDispatch();
 
   const [_state, formAction, isPending] = useActionState(
@@ -50,7 +52,7 @@ export function FormAddTask() {
       task: null,
     },
   );
-
+  // useEffect also for do animation
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (formRef.current && !formRef.current.contains(event.target as Node)) {
