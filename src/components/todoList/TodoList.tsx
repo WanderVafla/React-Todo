@@ -1,11 +1,10 @@
 import { use, useEffect, useState } from 'react';
 import { TodoItem } from './TodoItem';
-import { tasksPromise } from '../../utils';
+import { sortTaks, tasksPromise } from '../../utils';
 import { useTasks, useTasksDispatch } from '../../hooks/useTasks';
 import { SortPanel } from './SortPanel';
 import { FiltersNames, OrderName, TaskActionTypes } from '../../constants';
 import type { FilterDoned, SortOption } from '../../types';
-import { useSort } from '../../hooks/useSort';
 
 export function TodoList() {
   const tasksFromAPI = use(tasksPromise);
@@ -16,7 +15,7 @@ export function TodoList() {
   const [sortState, setSortState] = useState<SortOption>(
     Object.values(OrderName)[0],
   );
-  const tasks = useSort(useTasks(), sortState);
+  const tasks = sortTaks(useTasks(), sortState);
 
   useEffect(() => {
     tasksDispatch({
