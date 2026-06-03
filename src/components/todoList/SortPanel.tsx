@@ -1,20 +1,20 @@
 import { useEffect, useState, type ChangeEvent, type Dispatch } from 'react';
-import type { SortDoned, SortOption } from '../../types';
+import type { FilterDoned, SortOption } from '../../types';
 import { useTasksDispatch } from '../../hooks/useTasks';
-import { OrderDoned, OrderName, TaskActionTypes } from '../../constants';
+import { FiltersNames, OrderName, TaskActionTypes } from '../../constants';
 import { useFilter } from '../../hooks/useFilter';
 
 // This are the constants they not change!
 const sortsOptions: SortOption[] = Object.values(OrderName);
 
-export function SortPanel({ onFilter }: { onFilter: Dispatch<SortDoned> }) {
+export function SortPanel({ onFilter }: { onFilter: Dispatch<FilterDoned> }) {
   const tasksDispatch = useTasksDispatch();
   // Custom hook for control state of filter button
   // Filter Button have 3 state:
   // None -> none filter
   // Complited -> only tasks complited
   // Uncomplited -> only tasks uncomplited
-  const [state, setIncrement] = useFilter(OrderDoned);
+  const [state, setIncrement] = useFilter(FiltersNames);
   const [selectedOption, setSelectedOption] = useState<SortOption>(
     sortsOptions[0],
   );

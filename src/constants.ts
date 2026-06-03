@@ -12,7 +12,7 @@ export enum OrderName {
   name = 'name',
 }
 
-export const OrderDoned = {
+export const FiltersNames = {
   none: 'None',
   trueUp: 'Complited',
   falseDown: 'Unconplited',

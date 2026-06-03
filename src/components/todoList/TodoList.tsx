@@ -3,14 +3,14 @@ import { TodoItem } from './TodoItem';
 import { tasksPromise } from '../../utils';
 import { useTasks, useTasksDispatch } from '../../hooks/useTasks';
 import { SortPanel } from './SortPanel';
-import { OrderDoned, TaskActionTypes } from '../../constants';
-import type { SortDoned } from '../../types';
+import { FiltersNames, TaskActionTypes } from '../../constants';
+import type { FilterDoned } from '../../types';
 
 export function TodoList() {
   const tasksDispatch = useTasksDispatch();
   const tasks = useTasks();
-  const [filterTarget, setFilterTarget] = useState<SortDoned>(
-    Object.values(OrderDoned)[0],
+  const [filterTarget, setFilterTarget] = useState<FilterDoned>(
+    Object.values(FiltersNames)[0],
   );
 
   const tasksFromAPI = use(tasksPromise);
@@ -29,14 +29,14 @@ export function TodoList() {
           <hr />
           <div id="todos-list">
             {tasks.map((task) => {
-              if (filterTarget === OrderDoned.none) {
+              if (filterTarget === FiltersNames.none) {
                 return <TodoItem key={task.id} task={task} />;
               }
-              if (filterTarget === OrderDoned.trueUp) {
+              if (filterTarget === FiltersNames.trueUp) {
                 console.log(filterTarget);
                 return task.done && <TodoItem key={task.id} task={task} />;
               }
-              if (filterTarget === OrderDoned.falseDown) {
+              if (filterTarget === FiltersNames.falseDown) {
                 console.log(filterTarget);
                 return !task.done && <TodoItem key={task.id} task={task} />;
               }

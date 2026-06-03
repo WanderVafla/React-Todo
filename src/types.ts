@@ -1,4 +1,4 @@
-import type { OrderDoned, OrderName, TaskActionTypes } from './constants';
+import type { FiltersNames, OrderName, TaskActionTypes } from './constants';
 
 export interface TaskPost {
   title: string;
@@ -17,7 +17,7 @@ export type ApiReturn = {
   task: Task | Task[] | null;
 };
 
-export type SortDoned = (typeof OrderDoned)[keyof typeof OrderDoned];
+export type FilterDoned = (typeof FiltersNames)[keyof typeof FiltersNames];
 export type SortOption = (typeof OrderName)[keyof typeof OrderName];
 
 export type TaskAction = {
