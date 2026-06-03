@@ -6,7 +6,6 @@ export function useFilter(ObjectEnum: object) {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const increment = () =>
     setCurrentIndex((prevIndex) => {
-      console.log(`hookState ${prevIndex}`);
       if (prevIndex >= countMax) {
         return 0;
       }
