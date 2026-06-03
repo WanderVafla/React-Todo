@@ -3,17 +3,21 @@ import { TodoItem } from './TodoItem';
 import { tasksPromise } from '../../utils';
 import { useTasks, useTasksDispatch } from '../../hooks/useTasks';
 import { SortPanel } from './SortPanel';
-import { FiltersNames, TaskActionTypes } from '../../constants';
-import type { FilterDoned } from '../../types';
+import { FiltersNames, OrderName, TaskActionTypes } from '../../constants';
+import type { FilterDoned, SortOption } from '../../types';
+import { useSort } from '../../hooks/useSort';
 
 export function TodoList() {
+  const tasksFromAPI = use(tasksPromise);
   const tasksDispatch = useTasksDispatch();
-  const tasks = useTasks();
   const [filterTarget, setFilterTarget] = useState<FilterDoned>(
     Object.values(FiltersNames)[0],
   );
+  const [sortState, setSortState] = useState<SortOption>(
+    Object.values(OrderName)[0],
+  );
+  const tasks = useSort(useTasks(), sortState);
 
-  const tasksFromAPI = use(tasksPromise);
   useEffect(() => {
     tasksDispatch({
       type: TaskActionTypes.load,
@@ -25,30 +29,18 @@ export function TodoList() {
     <>
       {tasks.length > 0 ? (
         <div id="todos-list-border">
-          <SortPanel onFilter={setFilterTarget} />
+          <SortPanel onFilter={setFilterTarget} onSort={setSortState} />
           <hr />
           <div id="todos-list">
             {tasks
-            .filter((task) => {
-              if (filterTarget === FiltersNames.trueUp) return task.done;
-              if (filterTarget === FiltersNames.falseDown) return !task.done
-              return true
-            })
-            .map((task) => (
-              <TodoItem key={task.id} task={task}/>
-            )
-              // if (filterTarget === FiltersNames.none) {
-              //   return <TodoItem key={task.id} task={task} />;
-              // }
-              // if (filterTarget === FiltersNames.trueUp) {
-              //   console.log(filterTarget);
-              //   return task.done && <TodoItem key={task.id} task={task} />;
-              // }
-              // if (filterTarget === FiltersNames.falseDown) {
-              //   console.log(filterTarget);
-              //   return !task.done && <TodoItem key={task.id} task={task} />;
-              // }
-            )}
+              .filter((task) => {
+                if (filterTarget === FiltersNames.trueUp) return task.done;
+                if (filterTarget === FiltersNames.falseDown) return !task.done;
+                return true;
+              })
+              .map((task) => (
+                <TodoItem key={task.id} task={task} />
+              ))}
           </div>
         </div>
       ) : (

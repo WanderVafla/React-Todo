@@ -6,11 +6,11 @@ export enum TaskActionTypes {
   order = 'order',
 }
 
-export enum OrderName {
-  newest = 'newest',
-  time = 'due',
-  name = 'name',
-}
+export const OrderName = {
+  newest: 'newest',
+  time: 'due',
+  name: 'name',
+};
 
 export const FiltersNames = {
   none: 'None',

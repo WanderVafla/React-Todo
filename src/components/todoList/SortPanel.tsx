@@ -1,14 +1,18 @@
 import { useEffect, useState, type ChangeEvent, type Dispatch } from 'react';
 import type { FilterDoned, SortOption } from '../../types';
-import { useTasksDispatch } from '../../hooks/useTasks';
-import { FiltersNames, OrderName, TaskActionTypes } from '../../constants';
+import { FiltersNames, OrderName } from '../../constants';
 import { useFilter } from '../../hooks/useFilter';
 
 // This are the constants they not change!
 const sortsOptions: SortOption[] = Object.values(OrderName);
 
-export function SortPanel({ onFilter }: { onFilter: Dispatch<FilterDoned> }) {
-  const tasksDispatch = useTasksDispatch();
+export function SortPanel({
+  onFilter,
+  onSort,
+}: {
+  onFilter: Dispatch<FilterDoned>;
+  onSort: Dispatch<SortOption>;
+}) {
   // Custom hook for control state of filter button
   // Filter Button have 3 state:
   // None -> none filter
@@ -23,11 +27,8 @@ export function SortPanel({ onFilter }: { onFilter: Dispatch<FilterDoned> }) {
   }, [state, onFilter]);
 
   useEffect(() => {
-    tasksDispatch({
-      type: TaskActionTypes.order,
-      order: selectedOption,
-    });
-  }, [selectedOption, tasksDispatch]);
+    onSort(selectedOption);
+  }, [selectedOption, onSort]);
   const handleSelectedOption = (event: ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value as SortOption;
     setSelectedOption(value);
@@ -40,7 +41,11 @@ export function SortPanel({ onFilter }: { onFilter: Dispatch<FilterDoned> }) {
         {state}
       </button>
 
-      <select name="sort-select" value={selectedOption} onChange={handleSelectedOption}>
+      <select
+        name="sort-select"
+        value={selectedOption}
+        onChange={handleSelectedOption}
+      >
         {sortsOptions.map((sortOption) => (
           <option key={sortOption}>{sortOption}</option>
         ))}
