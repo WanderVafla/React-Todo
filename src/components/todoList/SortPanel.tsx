@@ -31,7 +31,6 @@ export function SortPanel({ onFilter }: { onFilter: Dispatch<FilterDoned> }) {
   const handleSelectedOption = (event: ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value as SortOption;
     setSelectedOption(value);
-    console.log(event.target.value);
   };
 
   return (
@@ -41,7 +40,7 @@ export function SortPanel({ onFilter }: { onFilter: Dispatch<FilterDoned> }) {
         {state}
       </button>
 
-      <select name="sort-select" id="" onChange={handleSelectedOption}>
+      <select name="sort-select" value={selectedOption} onChange={handleSelectedOption}>
         {sortsOptions.map((sortOption) => (
           <option key={sortOption}>{sortOption}</option>
         ))}
