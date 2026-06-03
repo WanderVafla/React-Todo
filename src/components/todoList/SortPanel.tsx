@@ -1,56 +1,50 @@
-import { useEffect, useState, type ChangeEvent } from "react";
-import type { SortDoned, SortOption } from "../../types";
-import { useTasksDispatch } from "../../hooks/useTasks";
-import { OrderDoned, OrderName, TaskActionTypes } from "../../constants";
+import { useEffect, useState, type ChangeEvent, type Dispatch } from 'react';
+import type { SortDoned, SortOption } from '../../types';
+import { useTasksDispatch } from '../../hooks/useTasks';
+import { OrderDoned, OrderName, TaskActionTypes } from '../../constants';
+import { useFilter } from '../../hooks/useFilter';
 
 // This are the constants they not change!
-const sortsDoned: SortDoned[] = Object.values(OrderDoned)
-const sortsOptions: SortOption[] = Object.values(OrderName)
-console.log(Object.values(OrderDoned));
+const sortsOptions: SortOption[] = Object.values(OrderName);
 
-let sortDonedTaskTarget = 0
-
-export function SortPanel() {
+export function SortPanel({ onFilter }: { onFilter: Dispatch<SortDoned> }) {
   const tasksDispatch = useTasksDispatch();
-  
-  const [selectedOption, setSelectedOption] = useState<SortOption>(sortsOptions[0])
-  const [stateOrederDoned, setStateOrderDoned] = useState<SortDoned>(sortsDoned[sortDonedTaskTarget])
-  const handleStateOrderDoned = () => {
-      sortDonedTaskTarget += 1
-      if (sortDonedTaskTarget > 2) {
-        sortDonedTaskTarget = 0
-      }
-      
-      setStateOrderDoned(sortsDoned[sortDonedTaskTarget])
-    }
-    useEffect(() => {
-      tasksDispatch({
-        type: TaskActionTypes.order,
-        order: {
-          type: selectedOption, 
-          doned: stateOrederDoned
-        },
-      })
-    }, [selectedOption, stateOrederDoned])
-    const handleSelectedOption = (event: ChangeEvent<HTMLSelectElement>) => {
-      const value = event.target.value as SortOption
-      setSelectedOption(value)
-      console.log(event.target.value)
-    }
-    
+  // Custom hook for control state of filter button
+  // Filter Button have 3 state:
+  // None -> none filter
+  // Complited -> only tasks complited
+  // Uncomplited -> only tasks uncomplited
+  const [state, setIncrement] = useFilter(OrderDoned);
+  const [selectedOption, setSelectedOption] = useState<SortOption>(
+    sortsOptions[0],
+  );
+  useEffect(() => {
+    onFilter(state);
+  }, [state, onFilter]);
+
+  useEffect(() => {
+    tasksDispatch({
+      type: TaskActionTypes.order,
+      order: selectedOption,
+    });
+  }, [selectedOption, tasksDispatch]);
+  const handleSelectedOption = (event: ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value as SortOption;
+    setSelectedOption(value);
+    console.log(event.target.value);
+  };
+
   return (
     <div id="todos-list-options">
       <label htmlFor="">done:</label>
-      <button type="button" onClick={handleStateOrderDoned}>
-        {(()=> {
-          if (stateOrederDoned === OrderDoned.none) return OrderDoned.none;
-          if (stateOrederDoned === OrderDoned.trueUp) return OrderDoned.trueUp;
-          if (stateOrederDoned === OrderDoned.falseDown) return OrderDoned.falseDown;
-        })()} 
+      <button type="button" onClick={setIncrement}>
+        {state}
       </button>
 
       <select name="sort-select" id="" onChange={handleSelectedOption}>
-        {sortsOptions.map((sortOption) => <option key={sortOption}>{sortOption}</option>)}
+        {sortsOptions.map((sortOption) => (
+          <option key={sortOption}>{sortOption}</option>
+        ))}
       </select>
     </div>
   );
