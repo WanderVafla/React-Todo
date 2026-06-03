@@ -1,20 +1,24 @@
+import { TaskActionTypes } from '../../constants';
 import type { Task, TaskAction } from '../../types';
 
 export function tasksReducer(tasks: Task[], action: TaskAction): Task[] {
   switch (action.type) {
-    case 'load': {
-      return Array.isArray(action.body) && action.body;
+    case TaskActionTypes.load: {
+      return Array.isArray(action.body) ? action.body : [];
     }
-    case 'add': {
-      return [...tasks, !Array.isArray(action.body) && action.body];
+    case TaskActionTypes.add: {
+      if (action.body && !Array.isArray(action.body)) {
+        return [action.body, ...tasks];
+      }
+      return tasks;
     }
-    case 'delete': {
+    case TaskActionTypes.delete: {
       const target: Task = Array.isArray(action.body)
         ? action.body[0]
         : action.body;
       return [...tasks].filter((task) => task !== target);
     }
-    case 'change': {
+    case TaskActionTypes.change: {
       const target: Task = Array.isArray(action.body)
         ? action.body[0]
         : action.body;

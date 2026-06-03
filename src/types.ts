@@ -1,3 +1,5 @@
+import type { FiltersNames, OrderName, TaskActionTypes } from './constants';
+
 export interface TaskPost {
   title: string;
   content: string | null;
@@ -15,7 +17,11 @@ export type ApiReturn = {
   task: Task | Task[] | null;
 };
 
+export type FilterDoned = (typeof FiltersNames)[keyof typeof FiltersNames];
+export type SortOption = (typeof OrderName)[keyof typeof OrderName];
+
 export type TaskAction = {
-  type: 'add' | 'load' | 'delete' | 'change';
-  body: Task | Task[];
+  type: (typeof TaskActionTypes)[keyof typeof TaskActionTypes];
+  body?: Task | Task[];
+  order?: SortOption;
 };
