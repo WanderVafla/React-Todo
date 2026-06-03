@@ -15,7 +15,7 @@ export function TodoList() {
 
   const [sortState, setSortState] = useState<SortOption>(sortsOptions[0]);
 
-  const tasks = sortTask(useTasks(), sortState);
+  const tasks = sortTasks(useTasks(), sortState);
   const [filterState, setFilterState] = useFilter(FiltersNames);
 
   const handleSelectedOption = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -70,7 +70,7 @@ export function TodoList() {
   );
 }
 
-function sortTask(tasks, sortOption: SortOption) {
+function sortTasks(tasks, sortOption: SortOption) {
   tasks.sort((a, b) => {
     if (sortOption === OrderName.newest) {
       return b.id - a.id;
