@@ -6,9 +6,6 @@ import { TasksProvider } from './components/context/TasksProvider';
 import { Suspense } from 'react';
 
 const App = () => {
-  // const [filterTarget, setFilterTarget] = useState<SortDoned>(
-  //   Object.values(OrderDoned)[0]
-  // );
   return (
     <>
       <div>Error Management Window (hidden)</div>
