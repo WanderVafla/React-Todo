@@ -4,10 +4,13 @@ import type { Task, TaskAction } from '../../types';
 export function tasksReducer(tasks: Task[], action: TaskAction): Task[] {
   switch (action.type) {
     case TaskActionTypes.load: {
-      return Array.isArray(action.body) && action.body;
+      return Array.isArray(action.body) ? action.body : [];
     }
     case TaskActionTypes.add: {
-      return [!Array.isArray(action.body) && action.body, ...tasks];
+      if (action.body && !Array.isArray(action.body)) {
+        return [action.body, ...tasks];
+      }
+      return tasks
     }
     case TaskActionTypes.delete: {
       const target: Task = Array.isArray(action.body)
@@ -37,7 +40,6 @@ export function tasksReducer(tasks: Task[], action: TaskAction): Task[] {
           return orderedTasks;
         }
         case OrderName.name: {
-          console.log(tasks.sort((a, b) => a.id - b.id));
           const orderedTasks = [...tasks].sort((a, b) =>
             a.title.localeCompare(b.title),
           );
@@ -45,13 +47,10 @@ export function tasksReducer(tasks: Task[], action: TaskAction): Task[] {
         }
         case OrderName.time: {
           const orderedTasks = [...tasks].sort((a, b) => {
-            if (a.due_date && b.due_date) {
-              const dateA = new Date(a.due_date).getTime();
-              const dateB = new Date(b.due_date).getTime();
-              return dateA - dateB;
-            } else {
-              return -1;
-            }
+            if (!a.due_date && !b.due_date) return 0;
+            if (!a.due_date) return 1
+            if (!b.due_date) return -1
+            return new Date(a.due_date).getTime() - new Date(b.due_date).getTime()
           });
           return orderedTasks;
         }
