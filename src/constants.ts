@@ -14,6 +14,6 @@ export enum OrderName {
 
 export const FiltersNames = {
   none: 'None',
-  trueUp: 'Complited',
-  falseDown: 'Unconplited',
+  trueUp: 'Completed',
+  falseDown: 'Incomplete',
 };
