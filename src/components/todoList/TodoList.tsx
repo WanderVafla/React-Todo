@@ -1,21 +1,28 @@
-import { use, useEffect, useState } from 'react';
+import { use, useEffect, useState, type ChangeEvent } from 'react';
 import { TodoItem } from './TodoItem';
 import { sortTaks, tasksPromise } from '../../utils';
 import { useTasks, useTasksDispatch } from '../../hooks/useTasks';
-import { SortPanel } from './SortPanel';
 import { FiltersNames, OrderName, TaskActionTypes } from '../../constants';
-import type { FilterDoned, SortOption } from '../../types';
+import type { SortOption } from '../../types';
+import { useFilter } from '../../hooks/useFilter';
+
+const sortsOptions: SortOption[] = Object.values(OrderName);
 
 export function TodoList() {
   const tasksFromAPI = use(tasksPromise);
   const tasksDispatch = useTasksDispatch();
-  const [filterTarget, setFilterTarget] = useState<FilterDoned>(
-    Object.values(FiltersNames)[0],
-  );
+
   const [sortState, setSortState] = useState<SortOption>(
     Object.values(OrderName)[0],
   );
+  
   const tasks = sortTaks(useTasks(), sortState);
+  const [filterState, setFilterState] = useFilter(FiltersNames);
+
+  const handleSelectedOption = (event: ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value as SortOption;
+    setSortState(value);
+  };
 
   useEffect(() => {
     tasksDispatch({
@@ -28,13 +35,28 @@ export function TodoList() {
     <>
       {tasks.length > 0 ? (
         <div id="todos-list-border">
-          <SortPanel onFilter={setFilterTarget} onSort={setSortState} />
+          <div id="todos-list-options">
+            <label htmlFor="">done:</label>
+            <button type="button" onClick={setFilterState}>
+              {filterState}
+            </button>
+
+            <select
+              name="sort-select"
+              value={sortState}
+              onChange={handleSelectedOption}
+            >
+              {sortsOptions.map((sortOption) => (
+                <option key={sortOption}>{sortOption}</option>
+              ))}
+            </select>
+          </div>
           <hr />
           <div id="todos-list">
             {tasks
               .filter((task) => {
-                if (filterTarget === FiltersNames.trueUp) return task.done;
-                if (filterTarget === FiltersNames.falseDown) return !task.done;
+                if (filterState === FiltersNames.trueUp) return task.done;
+                if (filterState === FiltersNames.falseDown) return !task.done;
                 return true;
               })
               .map((task) => (
