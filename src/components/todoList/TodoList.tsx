@@ -28,19 +28,27 @@ export function TodoList() {
           <SortPanel onFilter={setFilterTarget} />
           <hr />
           <div id="todos-list">
-            {tasks.map((task) => {
-              if (filterTarget === FiltersNames.none) {
-                return <TodoItem key={task.id} task={task} />;
-              }
-              if (filterTarget === FiltersNames.trueUp) {
-                console.log(filterTarget);
-                return task.done && <TodoItem key={task.id} task={task} />;
-              }
-              if (filterTarget === FiltersNames.falseDown) {
-                console.log(filterTarget);
-                return !task.done && <TodoItem key={task.id} task={task} />;
-              }
-            })}
+            {tasks
+            .filter((task) => {
+              if (filterTarget === FiltersNames.trueUp) return task.done;
+              if (filterTarget === FiltersNames.falseDown) return !task.done
+              return true
+            })
+            .map((task) => (
+              <TodoItem key={task.id} task={task}/>
+            )
+              // if (filterTarget === FiltersNames.none) {
+              //   return <TodoItem key={task.id} task={task} />;
+              // }
+              // if (filterTarget === FiltersNames.trueUp) {
+              //   console.log(filterTarget);
+              //   return task.done && <TodoItem key={task.id} task={task} />;
+              // }
+              // if (filterTarget === FiltersNames.falseDown) {
+              //   console.log(filterTarget);
+              //   return !task.done && <TodoItem key={task.id} task={task} />;
+              // }
+            )}
           </div>
         </div>
       ) : (
