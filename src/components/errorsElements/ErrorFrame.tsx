@@ -4,9 +4,6 @@ import { ErrorContext } from './context/ErorreContext';
 export function ErrorFrame() {
   const errorsConstext = use(ErrorContext);
   const { errors, removeError } = errorsConstext;
-  if (!errorsConstext) {
-    return <p>Error: ItemList must be used within an ItemsProvider</p>;
-  }
 
   return (
     <div id="error-frame">
