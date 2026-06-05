@@ -28,9 +28,6 @@ const App = () => {
                   console.error(error);
                   console.info(info);
                 }}
-                onReset={() => {
-                  console.log('reset');
-                }}
               >
                 <TodoList tasksPromise={todosPromis} />
               </ErrorBoundary>
