@@ -3,18 +3,16 @@ import type { ApiReturn, Task, TaskPost } from './types';
 const todos_url = 'https://api.todos.in.jt-lab.ch/todos';
 
 export async function getTasks(): Promise<Task[]> {
-  try {
-    const request = await fetch(`${todos_url}`, {
-      method: 'GET',
-    });
-    if (!request.ok) {
-      throw new Error(await request.json());
-    }
-    return await request.json();
-  } catch (e) {
-    console.error(e);
-    return [];
+  const request = await fetch(`${todos_url}`, {
+    method: 'GET',
+  });
+  if (!request.ok) {
+    const errorBody = await request.json().catch(() => ({}));
+    const errorMessage =
+      errorBody.message || errorBody.error || `Error Server: ${request.status}`;
+    throw new Error(errorMessage);
   }
+  return await request.json();
 }
 
 export async function postTask(task: TaskPost): Promise<ApiReturn> {
