@@ -1,20 +1,21 @@
+import { ErrorMessage } from './constants';
 import type { ApiReturn, Task, TaskPost } from './types';
 
 const todos_url = 'https://api.todos.in.jt-lab.ch/todos';
 
 export async function getTasks(): Promise<Task[]> {
-  try {
-    const request = await fetch(`${todos_url}`, {
-      method: 'GET',
-    });
-    if (!request.ok) {
-      throw new Error(await request.json());
-    }
-    return await request.json();
-  } catch (e) {
-    console.error(e);
-    return [];
+  const request = await fetch(`${todos_url}`, {
+    method: 'GET',
+  });
+  if (!request.ok) {
+    const errorBody = await request.json().catch(() => ({}));
+    const errorMessage =
+      errorBody.message || errorBody.error || `Error Server: ${request.status}`;
+    console.error(errorMessage);
+    
+    throw new Error(ErrorMessage.missingLoadTasks);
   }
+  return await request.json();
 }
 
 export async function postTask(task: TaskPost): Promise<ApiReturn> {
@@ -28,9 +29,11 @@ export async function postTask(task: TaskPost): Promise<ApiReturn> {
       body: JSON.stringify(task),
     });
     if (!request.ok) {
-      const error = await request.json();
-      console.error(error);
-      return { success: false, message: error, task: null };
+      const errorBody = await request.json().catch(() => ({}));
+      const errorMessage =
+      errorBody.message || errorBody.error || `Error Server: ${request.status}`;
+      console.error(errorMessage)
+      throw new Error(ErrorMessage.missingAddNewTask);
     }
     if (request.status === 201) {
       const response: Task | Task[] = await request.json();
@@ -61,9 +64,22 @@ export async function deleteTask(id: number) {
       method: 'DELETE',
     });
     if (!request.ok) {
-      const error = await request.json();
-      console.error(error);
-      return { success: false, message: error, task: null };
+      let errorMessage = 'Failed to delete task';
+
+      const contentType = request.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        const errorData = await request.json();
+        errorMessage = errorData.message || JSON.stringify(errorData);
+        console.error(errorData);
+        throw new Error(ErrorMessage.missingDeleteTask)
+        
+      } else {
+        errorMessage = `Server error: ${request.status} ${request.statusText}`;
+      }
+
+      // const error = await request.json();
+      console.error(errorMessage);
+      return { success: false, message: errorMessage, task: null };
     }
     if (request.status === 204) {
       return {
@@ -108,7 +124,9 @@ export async function patchTask(id: number, body: Partial<Task>) {
         'message' in response
           ? String(response.message)
           : JSON.stringify(response);
-      return { success: false, message: errorMessage, task: null };
+
+          console.error(errorMessage);
+      return { success: false, message: ErrorMessage.missingEditTask, task: null };
     }
 
     return {

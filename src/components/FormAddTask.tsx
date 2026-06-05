@@ -1,4 +1,5 @@
 import {
+  use,
   useActionState,
   useEffect,
   useRef,
@@ -8,16 +9,37 @@ import {
 import type { ApiReturn, TaskAction, TaskPost } from '../types';
 import { postTask } from '../api';
 import { useTasksDispatch } from '../hooks/useTasks';
-import { TaskActionTypes } from '../constants';
+import { ErrorMessage, TaskActionTypes } from '../constants';
+import { ErrorContext } from './errorsElements/context/ErorreContext';
+import { isPassed } from '../utiles';
 
 async function addNewTask(
   _previousState: ApiReturn | null,
   formData: FormData,
   tasksDispatch: Dispatch<TaskAction>,
+  addError: (error: string) => void,
 ): Promise<ApiReturn> {
   const taskTitle = formData.get('title') as string;
   const taskContent = formData.get('content') as string;
   const taskDue = formData.get('due') as string;
+
+  if (taskTitle.trim() === '' || taskTitle === null) {
+    addError(ErrorMessage.missingTaskTitle);
+    return {
+      success: false,
+      message: ErrorMessage.missingTaskTitle,
+      task: null,
+    };
+  }
+
+  if (taskDue && isPassed(taskDue)) {
+    addError(ErrorMessage.dateIsPassed);
+    return {
+      success: false,
+      message: ErrorMessage.dateIsPassed,
+      task: null,
+    };
+  }
 
   const newTask: TaskPost = {
     title: taskTitle.trim() !== '' ? taskTitle : null,
@@ -25,12 +47,16 @@ async function addNewTask(
     due_date: taskDue !== '' ? taskDue : null,
     done: false,
   };
+
   const response: ApiReturn = await postTask(newTask);
   if (response.success) {
     tasksDispatch({
       type: TaskActionTypes.add,
       body: Array.isArray(response.task) ? response.task[0] : response.task,
     });
+  }
+  if (!response.success) {
+    addError(response.message);
   }
 
   return response;
@@ -42,10 +68,12 @@ export function FormAddTask() {
   const formRef = useRef<HTMLFormElement | null>(null);
 
   const tasksDispatch = useTasksDispatch();
+  const errorsContext = use(ErrorContext);
 
+  const { addError } = errorsContext;
   const [_state, formAction, isPending] = useActionState(
     (previousState, formData) =>
-      addNewTask(previousState, formData, tasksDispatch),
+      addNewTask(previousState, formData, tasksDispatch, addError),
     {
       success: null,
       message: '',

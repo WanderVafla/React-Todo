@@ -1,5 +1,6 @@
 * {
   --background-color: linear-gradient(to bottom, #020917, #101725);
+  --background-color-error: rgb(149, 0, 0)
 }
 
 body {
@@ -140,4 +141,54 @@ main {
   display: flex;
   justify-content: flex-end;
   width: 50vw;
+}
+
+#error-frame {
+  width: 50vw;
+
+  display: flex;
+  flex-direction: column;
+  justify-self: center;
+
+  padding: 1em;
+  gap: 0.2em;
+  
+  background: transparent;
+
+}
+
+#error-frame:empty {
+  display: none;
+}
+
+.error-item {
+  font-size: large;
+  padding: 0.8em;
+  height: 1em;
+  display: flex;
+  justify-content: space-between;
+  background: var(--background-color-error);
+  border: 0.15em solid rgb(1, 4, 10);
+  box-shadow: 10px 10px 100px;
+  border-radius: 30px;
+  align-items: center;
+
+
+}
+
+.error-item button {
+  display: none;
+}
+
+.error-item:hover button {
+  display: block;
+}
+
+.error-fallback {
+  padding: 1em;
+  background: var(--background-color-error);
+  border: 0.15em solid rgb(1, 4, 10);
+  box-shadow: 10px 10px 100px;
+  border-radius: 30px;
+  font-size: 15px;
 }

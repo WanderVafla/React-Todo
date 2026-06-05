@@ -17,3 +17,13 @@ export const FiltersNames = {
   trueUp: 'Completed',
   falseDown: 'Incomplete',
 };
+
+export const ErrorMessage = {
+  missingTaksId: 'Task ID is missing',
+  missingTaskTitle: 'You must provide a title',
+  dateIsPassed: 'Date is passed or missing',
+  missingAddNewTask: 'A task is nod added. Please check your connection to Internet and try again!',
+  missingEditTask: 'A task modified is not saved. Please check your connection to Internet and try again!',
+  missingDeleteTask: 'A task is not be delete. Please check your connection to Internet and try again!',
+  missingLoadTasks: 'The tasks in be loading. Please check your connection to Internet and try again!',
+};
