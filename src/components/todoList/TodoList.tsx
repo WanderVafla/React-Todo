@@ -68,8 +68,8 @@ export function TodoList({ tasksPromise }: { tasksPromise: Promise<Task[]> }) {
   );
 }
 
-function sortTasks(tasks, sortOption: SortOption) {
-  tasks.sort((a, b) => {
+function sortTasks(tasks: Task[], sortOption: SortOption) {
+  return [...tasks].sort((a, b) => {
     if (sortOption === OrderName.newest) {
       return b.id - a.id;
     }
@@ -83,6 +83,4 @@ function sortTasks(tasks, sortOption: SortOption) {
       return a.title.localeCompare(b.title);
     }
   });
-
-  return tasks;
 }
