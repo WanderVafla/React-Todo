@@ -10,11 +10,14 @@ export function ErrorFrame() {
 
   return (
     <div id="error-frame">
-      {errors.map(error => (<ErrorItem error={error} />))}
+      {errors.map((error, indexError) => (<ErrorItem index={indexError} error={error} onRemove={removeError} />))}
     </div>
   );
 }
 
-function ErrorItem({ error }: { error: string }) {
-  return <span>{error}</span>;
+function ErrorItem({ index, error, onRemove }: { index: number, error: string, onRemove: (indexError: number) => void }) {
+  return <span>
+    {error}
+    <button id={String(index)} onClick={() => onRemove(index)}>X</button>
+    </span>;
 }
