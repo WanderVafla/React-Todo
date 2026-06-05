@@ -60,6 +60,8 @@ async function updateTask(
       type: TaskActionTypes.change,
       body: response.task,
     });
+  } else {
+    addError(response.message)
   }
   setIsEditing(false);
   return {
