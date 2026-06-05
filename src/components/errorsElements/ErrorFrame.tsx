@@ -27,11 +27,13 @@ function ErrorItem({
   onRemove: (indexError: number) => void;
 }) {
   return (
-    <span>
-      {error}
+    <div className='error-item'>
+      <span>
+        {error}
+      </span>
       <button id={String(index)} onClick={() => onRemove(index)}>
         X
       </button>
-    </span>
+    </div>
   );
 }
