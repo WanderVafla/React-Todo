@@ -12,6 +12,7 @@ import { ErrorProvoder } from './components/errorsElements/context/ErrorProvider
 const App = () => {
   return (
     <>
+      <ErrorProvoder>
         <ErrorFrame />
         <main>
           <h1>React Todos list</h1>
@@ -34,6 +35,7 @@ const App = () => {
           </TasksProvider>
           <button type="button">Delete All</button>
         </main>
+      </ErrorProvoder>
     </>
   );
 };

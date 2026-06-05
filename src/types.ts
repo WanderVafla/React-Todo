@@ -25,3 +25,9 @@ export type TaskAction = {
   body?: Task | Task[];
   order?: SortOption;
 };
+
+export interface ErrorsContextType {
+  errors: string[];
+  addError: (error: string) => void;
+  removeError: (indexError: number) => void
+}
