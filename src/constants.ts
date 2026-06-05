@@ -27,3 +27,7 @@ export const ErrorMessage = {
   missingDeleteTask: 'A task is not be delete. Please check your connection to Internet and try again!',
   missingLoadTasks: 'The tasks in be loading. Please check your connection to Internet and try again!',
 };
+
+export const URLs = {
+  todos: 'https://api.todos.in.jt-lab.ch/todos'
+}
