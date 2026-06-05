@@ -63,8 +63,8 @@ export async function deleteTask(id: number) {
 
       const contentType = request.headers.get('content-type');
       if (contentType && contentType.includes('application/json')) {
-        const errorData = await request.json()
-        errorMessage = errorData.message || JSON.stringify(errorData)
+        const errorData = await request.json();
+        errorMessage = errorData.message || JSON.stringify(errorData);
       } else {
         errorMessage = `Server error: ${request.status} ${request.statusText}`;
       }

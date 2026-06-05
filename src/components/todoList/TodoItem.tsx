@@ -1,4 +1,10 @@
-import { use, useActionState, useState, useTransition, type Dispatch } from 'react';
+import {
+  use,
+  useActionState,
+  useState,
+  useTransition,
+  type Dispatch,
+} from 'react';
 import type { ApiReturn, Task, TaskAction } from '../../types';
 import { useTasksDispatch } from '../../hooks/useTasks';
 import { deleteTask, patchTask } from '../../api';
@@ -6,7 +12,11 @@ import { ErrorMessage, TaskActionTypes } from '../../constants';
 import { ErrorContext } from '../errorsElements/context/ErorreContext';
 
 async function updateTask(
-previousState: ApiReturn | null, formData: FormData, tasksDispatch: Dispatch<TaskAction>, setIsEditing: Dispatch<boolean>, addError: (error: string) => void,
+  previousState: ApiReturn | null,
+  formData: FormData,
+  tasksDispatch: Dispatch<TaskAction>,
+  setIsEditing: Dispatch<boolean>,
+  addError: (error: string) => void,
 ) {
   const taskTitle = formData.get('title') as string | null;
   const taskContent = formData.get('content') as string | null;
@@ -14,8 +24,7 @@ previousState: ApiReturn | null, formData: FormData, tasksDispatch: Dispatch<Tas
 
   const id = previousState?.message;
   if (!id) {
-    
-    addError(ErrorMessage.missingTaksId)
+    addError(ErrorMessage.missingTaksId);
     return {
       success: false,
       message: ErrorMessage.missingTaksId,
@@ -23,7 +32,7 @@ previousState: ApiReturn | null, formData: FormData, tasksDispatch: Dispatch<Tas
   }
 
   if (taskTitle === null || taskTitle.trim() === '') {
-    addError(ErrorMessage.missingTaskTitle)
+    addError(ErrorMessage.missingTaskTitle);
     return {
       success: false,
       message: ErrorMessage.missingTaskTitle,
@@ -55,12 +64,18 @@ export function TodoItem({ task }: { task: Task }) {
   const [isEditing, setIsEditing] = useState(false);
 
   const tasksDispatch = useTasksDispatch();
-  const { addError } = use(ErrorContext)
+  const { addError } = use(ErrorContext);
 
-  const [ isPendingDelete, startTrasition] = useTransition()
+  const [isPendingDelete, startTrasition] = useTransition();
   const [_state, formAction, _isPending] = useActionState(
     (previousState, formData) =>
-      updateTask(previousState, formData, tasksDispatch, setIsEditing, addError),
+      updateTask(
+        previousState,
+        formData,
+        tasksDispatch,
+        setIsEditing,
+        addError,
+      ),
     {
       success: false,
       message: String(task.id),
@@ -72,22 +87,20 @@ export function TodoItem({ task }: { task: Task }) {
     const target = event.target.checked;
     setIsChecked(target);
 
-    startTrasition( async () => {
-    const response = await patchTask(task.id, { done: target });
+    startTrasition(async () => {
+      const response = await patchTask(task.id, { done: target });
 
-    if (response.success) {
-
+      if (response.success) {
         tasksDispatch({
           type: TaskActionTypes.change,
           body: task,
         });
       }
-    })
+    });
   };
 
   const remove = async () => {
-    startTrasition( async () => {
-
+    startTrasition(async () => {
       const response = await deleteTask(task.id);
       if (response.success) {
         tasksDispatch({
@@ -95,9 +108,9 @@ export function TodoItem({ task }: { task: Task }) {
           body: task,
         });
       } else {
-        addError(response.message)
+        addError(response.message);
       }
-    })
+    });
   };
 
   const toggleEditing = async () => {
@@ -119,17 +132,18 @@ export function TodoItem({ task }: { task: Task }) {
               <span>{task.title}</span>
             </div>
             <span>{!task.due_date ? 'no date' : task.due_date}</span>
-              { !isPendingDelete ?             
-            <div>
-              <button type="button" onClick={toggleEditing}>
-                Edit
-              </button>
-              <button type="button" onClick={remove}>
-                Remove
-              </button>
-            </div>
-              :
-              '...'}
+            {!isPendingDelete ? (
+              <div>
+                <button type="button" onClick={toggleEditing}>
+                  Edit
+                </button>
+                <button type="button" onClick={remove}>
+                  Remove
+                </button>
+              </div>
+            ) : (
+              '...'
+            )}
           </span>
           <div>{task.content && task.content}</div>
         </div>
