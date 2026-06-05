@@ -141,3 +141,14 @@ main {
   justify-content: flex-end;
   width: 50vw;
 }
+
+#error-frame {
+  display: flex;
+  flex-direction: column;
+  padding: 1em;
+  gap: 0.5em;
+  background: rgb(149, 0, 0);
+  border-radius: 30px;
+  border: 0.2em solid rgb(1, 4, 10);
+  box-shadow: 10px 10px 100px;
+}
