@@ -10,6 +10,7 @@ import { useTasksDispatch } from '../../hooks/useTasks';
 import { deleteTask, patchTask } from '../../api';
 import { ErrorMessage, TaskActionTypes } from '../../constants';
 import { ErrorContext } from '../errorsElements/context/ErorreContext';
+import { isPassed } from '../../utiles';
 
 async function updateTask(
   previousState: ApiReturn | null,
@@ -30,6 +31,14 @@ async function updateTask(
       message: ErrorMessage.missingTaksId,
     };
   }
+
+  if (isPassed(taskDue)) {
+      addError(ErrorMessage.dateIsPassed)
+      return {
+      success: false,
+      message: ErrorMessage.dateIsPassed,
+    };
+    }
 
   if (taskTitle === null || taskTitle.trim() === '') {
     addError(ErrorMessage.missingTaskTitle);

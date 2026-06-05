@@ -21,4 +21,5 @@ export const FiltersNames = {
 export const ErrorMessage = {
   missingTaksId: 'Task ID is missing',
   missingTaskTitle: 'Missing Title of task',
+  dateIsPassed: 'Date is passed'
 };

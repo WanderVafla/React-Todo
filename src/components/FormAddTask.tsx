@@ -9,8 +9,9 @@ import {
 import type { ApiReturn, TaskAction, TaskPost } from '../types';
 import { postTask } from '../api';
 import { useTasksDispatch } from '../hooks/useTasks';
-import { TaskActionTypes } from '../constants';
+import { ErrorMessage, TaskActionTypes } from '../constants';
 import { ErrorContext } from './errorsElements/context/ErorreContext';
+import { isPassed } from '../utiles';
 
 async function addNewTask(
   _previousState: ApiReturn | null,
@@ -24,6 +25,10 @@ async function addNewTask(
 
   if (taskTitle.trim() === '' || taskTitle === null) {
     return addError('you mush have a title a title');
+  }
+
+  if (isPassed(taskDue)) {
+    return addError(ErrorMessage.dateIsPassed)
   }
 
   const newTask: TaskPost = {
