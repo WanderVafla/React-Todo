@@ -1,14 +1,12 @@
-import { useActionState, useState, type Dispatch } from 'react';
+import { use, useActionState, useState, useTransition, type Dispatch } from 'react';
 import type { ApiReturn, Task, TaskAction } from '../../types';
 import { useTasksDispatch } from '../../hooks/useTasks';
 import { deleteTask, patchTask } from '../../api';
-import { TaskActionTypes } from '../../constants';
+import { ErrorMessage, TaskActionTypes } from '../../constants';
+import { ErrorContext } from '../errorsElements/context/ErorreContext';
 
 async function updateTask(
-  previousState: ApiReturn | null,
-  formData: FormData,
-  tasksDispatch: Dispatch<TaskAction>,
-  setIsEditing: Dispatch<boolean>,
+previousState: ApiReturn | null, formData: FormData, tasksDispatch: Dispatch<TaskAction>, setIsEditing: Dispatch<boolean>, addError: (error: string) => void,
 ) {
   const taskTitle = formData.get('title') as string | null;
   const taskContent = formData.get('content') as string | null;
@@ -16,17 +14,19 @@ async function updateTask(
 
   const id = previousState?.message;
   if (!id) {
+    
+    addError(ErrorMessage.missingTaksId)
     return {
       success: false,
-      message: 'Task ID is missing',
-      task: null,
+      message: ErrorMessage.missingTaksId,
     };
   }
 
   if (taskTitle === null || taskTitle.trim() === '') {
+    addError(ErrorMessage.missingTaskTitle)
     return {
       success: false,
-      message: 'Missing Title of task',
+      message: ErrorMessage.missingTaskTitle,
     };
   }
 
@@ -47,18 +47,20 @@ async function updateTask(
   return {
     success: response.success,
     message: id,
-    task: null,
   };
 }
 
 export function TodoItem({ task }: { task: Task }) {
   const [isChecked, setIsChecked] = useState(task.done);
   const [isEditing, setIsEditing] = useState(false);
-  const tasksDispatch = useTasksDispatch();
 
+  const tasksDispatch = useTasksDispatch();
+  const { addError } = use(ErrorContext)
+
+  const [ isPendingDelete, startTrasition] = useTransition()
   const [_state, formAction, _isPending] = useActionState(
     (previousState, formData) =>
-      updateTask(previousState, formData, tasksDispatch, setIsEditing),
+      updateTask(previousState, formData, tasksDispatch, setIsEditing, addError),
     {
       success: false,
       message: String(task.id),
@@ -70,23 +72,32 @@ export function TodoItem({ task }: { task: Task }) {
     const target = event.target.checked;
     setIsChecked(target);
 
+    startTrasition( async () => {
     const response = await patchTask(task.id, { done: target });
+
     if (response.success) {
-      tasksDispatch({
-        type: TaskActionTypes.change,
-        body: task,
-      });
-    }
+
+        tasksDispatch({
+          type: TaskActionTypes.change,
+          body: task,
+        });
+      }
+    })
   };
 
   const remove = async () => {
-    const response = await deleteTask(task.id);
-    if (response.success) {
-      tasksDispatch({
-        type: TaskActionTypes.delete,
-        body: task,
-      });
-    }
+    startTrasition( async () => {
+
+      const response = await deleteTask(task.id);
+      if (response.success) {
+        tasksDispatch({
+          type: TaskActionTypes.delete,
+          body: task,
+        });
+      } else {
+        addError(response.message)
+      }
+    })
   };
 
   const toggleEditing = async () => {
@@ -108,6 +119,7 @@ export function TodoItem({ task }: { task: Task }) {
               <span>{task.title}</span>
             </div>
             <span>{!task.due_date ? 'no date' : task.due_date}</span>
+              { !isPendingDelete ?             
             <div>
               <button type="button" onClick={toggleEditing}>
                 Edit
@@ -116,6 +128,8 @@ export function TodoItem({ task }: { task: Task }) {
                 Remove
               </button>
             </div>
+              :
+              '...'}
           </span>
           <div>{task.content && task.content}</div>
         </div>

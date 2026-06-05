@@ -59,9 +59,19 @@ export async function deleteTask(id: number) {
       method: 'DELETE',
     });
     if (!request.ok) {
-      const error = await request.json();
-      console.error(error);
-      return { success: false, message: error, task: null };
+      let errorMessage = 'Failed to delete task';
+
+      const contentType = request.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        const errorData = await request.json()
+        errorMessage = errorData.message || JSON.stringify(errorData)
+      } else {
+        errorMessage = `Server error: ${request.status} ${request.statusText}`;
+      }
+
+      // const error = await request.json();
+      console.error(errorMessage);
+      return { success: false, message: errorMessage, task: null };
     }
     if (request.status === 204) {
       return {

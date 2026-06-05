@@ -17,3 +17,8 @@ export const FiltersNames = {
   trueUp: 'Completed',
   falseDown: 'Incomplete',
 };
+
+export const ErrorMessage = {
+  missingTaksId: 'Task ID is missing',
+  missingTaskTitle: 'Missing Title of task'
+}
