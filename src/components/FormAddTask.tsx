@@ -1,4 +1,5 @@
 import {
+  use,
   useActionState,
   useEffect,
   useRef,
@@ -9,15 +10,18 @@ import type { ApiReturn, TaskAction, TaskPost } from '../types';
 import { postTask } from '../api';
 import { useTasksDispatch } from '../hooks/useTasks';
 import { TaskActionTypes } from '../constants';
+import { ErrorContext } from './errorsElements/context/ErorreContext';
 
 async function addNewTask(
-  _previousState: ApiReturn | null,
-  formData: FormData,
-  tasksDispatch: Dispatch<TaskAction>,
-): Promise<ApiReturn> {
+_previousState: ApiReturn | null, formData: FormData, tasksDispatch: Dispatch<TaskAction>, addError: (error: string) => void,
+) {
   const taskTitle = formData.get('title') as string;
   const taskContent = formData.get('content') as string;
   const taskDue = formData.get('due') as string;
+
+  if (taskTitle.trim() === '' || taskTitle === null) {
+    return addError("you mush have a title a title")
+  }
 
   const newTask: TaskPost = {
     title: taskTitle.trim() !== '' ? taskTitle : null,
@@ -32,6 +36,9 @@ async function addNewTask(
       body: Array.isArray(response.task) ? response.task[0] : response.task,
     });
   }
+  if (!response.success) {
+    addError(response.message)
+  }
 
   return response;
 }
@@ -42,10 +49,12 @@ export function FormAddTask() {
   const formRef = useRef<HTMLFormElement | null>(null);
 
   const tasksDispatch = useTasksDispatch();
+  const errorsContext = use(ErrorContext)
 
+  const { addError } = errorsContext
   const [_state, formAction, isPending] = useActionState(
     (previousState, formData) =>
-      addNewTask(previousState, formData, tasksDispatch),
+      addNewTask(previousState, formData, tasksDispatch, addError),
     {
       success: null,
       message: '',
