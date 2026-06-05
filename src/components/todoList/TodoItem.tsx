@@ -32,7 +32,7 @@ async function updateTask(
     };
   }
 
-  if (isPassed(taskDue)) {
+  if (taskDue && isPassed(taskDue)) {
       addError(ErrorMessage.dateIsPassed)
       return {
       success: false,
