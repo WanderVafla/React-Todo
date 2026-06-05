@@ -2,14 +2,12 @@ import { use, useEffect, useState, type ChangeEvent } from 'react';
 import { TodoItem } from './TodoItem';
 import { useTasks, useTasksDispatch } from '../../hooks/useTasks';
 import { FiltersNames, OrderName, TaskActionTypes } from '../../constants';
-import type { SortOption } from '../../types';
+import type { SortOption, Task } from '../../types';
 import { useFilter } from '../../hooks/useFilter';
-import { getTasks } from '../../api';
 
-const tasksPromise = getTasks();
 const sortsOptions: SortOption[] = Object.values(OrderName);
 
-export function TodoList() {
+export function TodoList({ tasksPromise }: { tasksPromise: Promise<Task[]> }) {
   const tasksFromAPI = use(tasksPromise);
   const tasksDispatch = useTasksDispatch();
 
