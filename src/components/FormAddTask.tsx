@@ -18,17 +18,27 @@ async function addNewTask(
   formData: FormData,
   tasksDispatch: Dispatch<TaskAction>,
   addError: (error: string) => void,
-) {
+): Promise<ApiReturn> {
   const taskTitle = formData.get('title') as string;
   const taskContent = formData.get('content') as string;
   const taskDue = formData.get('due') as string;
 
   if (taskTitle.trim() === '' || taskTitle === null) {
-    return addError('you mush have a title a title');
+    addError(ErrorMessage.missingTaskTitle);
+    return {
+      success: false,
+      message: ErrorMessage.missingTaskTitle,
+      task: null,
+    };
   }
 
   if (isPassed(taskDue)) {
-    return addError(ErrorMessage.dateIsPassed)
+    addError(ErrorMessage.dateIsPassed);
+    return {
+      success: false,
+      message: ErrorMessage.dateIsPassed,
+      task: null,
+    };
   }
 
   const newTask: TaskPost = {
@@ -37,6 +47,7 @@ async function addNewTask(
     due_date: taskDue !== '' ? taskDue : null,
     done: false,
   };
+
   const response: ApiReturn = await postTask(newTask);
   if (response.success) {
     tasksDispatch({

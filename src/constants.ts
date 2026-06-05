@@ -20,7 +20,7 @@ export const FiltersNames = {
 
 export const ErrorMessage = {
   missingTaksId: 'Task ID is missing',
-  missingTaskTitle: 'Missing Title of task',
+  missingTaskTitle: 'You must provide a title',
   dateIsPassed: 'Date is passed or missing',
   missingAddNewTask: 'A task is nod added. Please check your connection to Internet and try again!',
   missingEditTask: 'A task modified is not saved. Please check your connection to Internet and try again!',
