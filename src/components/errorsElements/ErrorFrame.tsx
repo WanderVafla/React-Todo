@@ -8,7 +8,7 @@ export function ErrorFrame() {
   return (
     <div id="error-frame">
       {errors.map((error, indexError) => (
-        <ErrorItem index={indexError} error={error} onRemove={removeError} />
+        <ErrorItem key={`${indexError}-${error}`} index={indexError} error={error} onRemove={removeError} />
       ))}
     </div>
   );
