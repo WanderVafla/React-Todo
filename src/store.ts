@@ -5,6 +5,7 @@ import type { Task, TaskPost } from './types';
 type State = {
   todos: Task[];
   errors: string[];
+  errorLoading: string | null;
 };
 
 type Action = {
@@ -20,19 +21,19 @@ export const useTodosStore = create<State & Action>((set) => ({
   // States
   todos: [],
   errors: [],
+  errorLoading: null,
 
   getLoadTodos: async () => {
     try {
       const request = await fetch(URLs.todos);
       if (!request.ok) {
         const error = await isError(request);
-        set((state) => ({ errors: [ErrorMessage.missingLoadTasks, ...state.errors] }));
         throw new Error(error);
       }
       const todos = await request.json();
       set({ todos: todos });
     } catch (error) {
-      set((state) => ({ errors: [error.message, ...state.errors] }));
+      set({ errorLoading: ErrorMessage.missingLoadTasks });
     }
   },
 
@@ -48,7 +49,7 @@ export const useTodosStore = create<State & Action>((set) => ({
       });
       if (!request.ok) {
         const error = await isError(request)[0];
-        set((state) => ({ errors: [error, ...state.errors] }));
+        set((state) => ({ errors: [ErrorMessage.missingAddNewTask, ...state.errors] }));
         throw new Error(error);
       }
       const response: Task = await request.json();
@@ -72,7 +73,7 @@ export const useTodosStore = create<State & Action>((set) => ({
       });
       if (!request.ok) {
         const error = await isError(request);
-        set((state) => ({ errors: [error, ...state.errors] }));
+        set((state) => ({ errors: [ErrorMessage.missingDeleteTask, ...state.errors] }));
         throw new Error(error);
       }
       set((state) => ({
@@ -96,7 +97,7 @@ export const useTodosStore = create<State & Action>((set) => ({
       });
       if (!request.ok) {
         const error = await isError(request);
-        set((state) => ({ errors: [error, ...state.errors] }));
+        set((state) => ({ errors: [ErrorMessage.missingEditTask, ...state.errors] }));
         throw new Error(error);
       }
       const response: Task = await request.json();

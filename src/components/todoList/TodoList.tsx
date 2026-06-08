@@ -10,6 +10,11 @@ const sortsOptions: SortOption[] = Object.values(OrderName);
 export function TodoList() {
   const tasksOrigin = useTodosStore((state) => state.todos);
   const fetchTasks = useTodosStore((state) => state.getLoadTodos);
+  const errorLoading = useTodosStore((state) => state.errorLoading);
+
+  if (errorLoading) {
+    throw new Error(errorLoading)
+  }
 
   const [sortState, setSortState] = useState<SortOption>(sortsOptions[0]);
 
