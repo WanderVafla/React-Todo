@@ -2,9 +2,9 @@ import { useTodosStore } from '../../store';
 
 export function ErrorFrame() {
   const errors = useTodosStore((state) => state.errors);
-  const removeError = useTodosStore(state => state.removeError)
+  const removeError = useTodosStore((state) => state.removeError);
   console.log(errors);
-  
+
   return (
     <div id="error-frame">
       {errors.map((error, indexError) => (

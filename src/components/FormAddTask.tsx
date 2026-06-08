@@ -1,24 +1,16 @@
-import {
-  useActionState,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { useActionState, useEffect, useRef, useState } from 'react';
 import type { TaskPost } from '../types';
 import { ErrorMessage } from '../constants';
 import { isPassed } from '../utiles';
 import { useTodosStore } from '../store';
 
-async function addNewTask(
-  _previousState: null,
-  formData: FormData
-) {
+async function addNewTask(_previousState: null, formData: FormData) {
   const taskTitle = formData.get('title') as string;
   const taskContent = formData.get('content') as string;
   const taskDue = formData.get('due') as string;
 
   if (taskTitle.trim() === '' || taskTitle === null) {
-    useTodosStore.getState().addError(ErrorMessage.missingTaskTitle)
+    useTodosStore.getState().addError(ErrorMessage.missingTaskTitle);
     return {
       success: false,
       message: ErrorMessage.missingTaskTitle,
@@ -27,7 +19,7 @@ async function addNewTask(
   }
 
   if (taskDue && isPassed(taskDue)) {
-    useTodosStore.getState().addError(ErrorMessage.dateIsPassed)
+    useTodosStore.getState().addError(ErrorMessage.dateIsPassed);
   }
 
   const newTask: TaskPost = {
@@ -37,7 +29,7 @@ async function addNewTask(
     done: false,
   };
 
-  await useTodosStore.getState().addTodo(newTask)
+  await useTodosStore.getState().addTodo(newTask);
 }
 
 export function FormAddTask() {
@@ -45,9 +37,7 @@ export function FormAddTask() {
   const [isContentVisible, setIsContentVisible] = useState(false);
   const formRef = useRef<HTMLFormElement | null>(null);
 
-  const [_state, formAction, isPending] = useActionState(
-      addNewTask,null
-  );
+  const [_state, formAction, isPending] = useActionState(addNewTask, null);
   // useEffect also for do animation
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

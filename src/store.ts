@@ -11,7 +11,7 @@ type State = {
 
 type Action = {
   fetchTodos: () => Promise<void>;
-  loadTodos: () => Task[]
+  loadTodos: () => Task[];
   addTodo: (todo: TaskPost) => Promise<Task>;
   deleteTodo: (id: number) => void;
   changeTodo: (id: number, item: Partial<Task>) => void;
@@ -28,28 +28,29 @@ export const useTodosStore = create<State & Action>((set, get) => ({
 
   fetchTodos: () => {
     try {
-      if (get().promis) return get().promis
+      if (get().promis) return get().promis;
       const fetchPromis = fetch(URLs.todos)
-      .then((res) => {
-        if (!res.ok) {
+        .then((res) => {
+          if (!res.ok) {
             throw new Error(ErrorMessage.missingLoadTasks);
-        } 
-        return res.json()
-      })
-      .then((data) => set({ todos: data }))
-        set({ promis: fetchPromis })
+          }
+          return res.json();
+        })
+        .then((data) => set({ todos: data }));
+      set({ promis: fetchPromis });
 
-      return fetchPromis
+      return fetchPromis;
     } catch (error) {
-        set({ promis: null })
+      console.log(error);
+      set({ promis: null });
       set({ errorLoading: ErrorMessage.missingLoadTasks });
     }
   },
 
   loadTodos: () => {
-    const {todos, fetchTodos} = get()
+    const { todos, fetchTodos } = get();
     if (todos) return todos;
-    throw fetchTodos()
+    throw fetchTodos();
   },
 
   addTodo: async (todo: TaskPost): Promise<Task | null> => {
@@ -64,16 +65,18 @@ export const useTodosStore = create<State & Action>((set, get) => ({
       });
       if (!request.ok) {
         const error = await isError(request);
-        set((state) => ({ errors: [ErrorMessage.missingAddNewTask, ...state.errors] }));
+        set((state) => ({
+          errors: [ErrorMessage.missingAddNewTask, ...state.errors],
+        }));
         throw new Error(error);
       }
       const response: Task = await request.json();
       console.log(response);
-      
-      const task: Task = Array.isArray(response) ? response[0] : response      
-      
+
+      const task: Task = Array.isArray(response) ? response[0] : response;
+
       set((state) => ({ todos: [task, ...state.todos] }));
-      return task
+      return task;
     } catch (error) {
       console.error(error);
       set({ errorLoading: ErrorMessage.missingLoadTasks });
@@ -87,7 +90,9 @@ export const useTodosStore = create<State & Action>((set, get) => ({
       });
       if (!request.ok) {
         const error = await isError(request);
-        set((state) => ({ errors: [ErrorMessage.missingDeleteTask, ...state.errors] }));
+        set((state) => ({
+          errors: [ErrorMessage.missingDeleteTask, ...state.errors],
+        }));
         throw new Error(error);
       }
       set((state) => ({
@@ -112,7 +117,9 @@ export const useTodosStore = create<State & Action>((set, get) => ({
       });
       if (!request.ok) {
         const error = await isError(request);
-        set((state) => ({ errors: [ErrorMessage.missingEditTask, ...state.errors] }));
+        set((state) => ({
+          errors: [ErrorMessage.missingEditTask, ...state.errors],
+        }));
         throw new Error(error);
       }
       const response: Task = await request.json();
@@ -129,12 +136,14 @@ export const useTodosStore = create<State & Action>((set, get) => ({
   },
 
   addError: (message: string) => {
-    set((state) => ({errors: [message, ...state.errors]}))
+    set((state) => ({ errors: [message, ...state.errors] }));
   },
 
   removeError: (indexError: number) => {
-    set((state) => ({ errors: [...state.errors].filter((_, index) => indexError !== index) }))
-  }
+    set((state) => ({
+      errors: [...state.errors].filter((_, index) => indexError !== index),
+    }));
+  },
 }));
 
 async function isError(request: Response): Promise<string> {

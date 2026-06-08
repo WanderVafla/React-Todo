@@ -1,8 +1,4 @@
-import {
-  useActionState,
-  useState,
-  type Dispatch,
-} from 'react';
+import { useActionState, useState, type Dispatch } from 'react';
 import type { Task } from '../../types';
 import { ErrorMessage } from '../../constants';
 import { isPassed } from '../../utiles';
@@ -18,19 +14,19 @@ async function updateTask(
   const taskDue = formData.get('due') as string | null;
 
   if (!previousState) {
-    useTodosStore.getState().addError(ErrorMessage.missingTaksId)
-    throw new Error(ErrorMessage.missingTaksId)
+    useTodosStore.getState().addError(ErrorMessage.missingTaksId);
+    throw new Error(ErrorMessage.missingTaksId);
   }
 
   const id = previousState;
 
   if (taskDue && isPassed(taskDue)) {
-    useTodosStore.getState().addError(ErrorMessage.dateIsPassed)
-    return id
+    useTodosStore.getState().addError(ErrorMessage.dateIsPassed);
+    return id;
   }
 
   if (taskTitle === null || taskTitle.trim() === '') {
-    useTodosStore.getState().addError(ErrorMessage.missingTaskTitle)
+    useTodosStore.getState().addError(ErrorMessage.missingTaskTitle);
     return id;
   }
 
@@ -39,7 +35,7 @@ async function updateTask(
     content: taskContent?.trim() ? taskContent : null,
     due_date: taskDue !== '' ? taskDue : null,
   };
-  useTodosStore.getState().changeTodo(Number(id), newTask)
+  useTodosStore.getState().changeTodo(Number(id), newTask);
 
   setIsEditing(false);
   return id;
@@ -54,13 +50,9 @@ export function TodoItem({ task }: { task: Task }) {
 
   const [_state, formAction, _isPending] = useActionState(
     (previousState: number, formData: FormData) =>
-      updateTask(
-        previousState,
-        formData,
-        setIsEditing,
-      ),
-    
-      task.id
+      updateTask(previousState, formData, setIsEditing),
+
+    task.id,
   );
 
   const handleChecked = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,14 +84,14 @@ export function TodoItem({ task }: { task: Task }) {
               <span>{task.title}</span>
             </div>
             <span>{!task.due_date ? 'no date' : task.due_date}</span>
-              <div>
-                <button type="button" onClick={toggleEditing}>
-                  Edit
-                </button>
-                <button type="button" onClick={remove}>
-                  Remove
-                </button>
-              </div>
+            <div>
+              <button type="button" onClick={toggleEditing}>
+                Edit
+              </button>
+              <button type="button" onClick={remove}>
+                Remove
+              </button>
+            </div>
           </span>
           <div>{task.content && task.content}</div>
         </div>

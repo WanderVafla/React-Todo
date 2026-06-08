@@ -12,7 +12,7 @@ export function TodoList() {
   const errorLoading = useTodosStore((state) => state.errorLoading);
 
   if (errorLoading) {
-    throw new Error(errorLoading)
+    throw new Error(errorLoading);
   }
 
   const [sortState, setSortState] = useState<SortOption>(sortsOptions[0]);
