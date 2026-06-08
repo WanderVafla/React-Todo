@@ -1,10 +1,10 @@
-import { use } from 'react';
-import { ErrorContext } from './context/ErorreContext';
+import { useTodosStore } from '../../store';
 
 export function ErrorFrame() {
-  const errorsConstext = use(ErrorContext);
-  const { errors, removeError } = errorsConstext;
-
+  const errors = useTodosStore((state) => state.errors);
+  const removeError = useTodosStore(state => state.removeError)
+  console.log(errors);
+  
   return (
     <div id="error-frame">
       {errors.map((error, indexError) => (

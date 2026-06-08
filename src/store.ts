@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { URLs } from './constants';
+import { ErrorMessage, URLs } from './constants';
 import type { Task, TaskPost } from './types';
 
 type State = {
@@ -12,6 +12,7 @@ type Action = {
   addTodo: (todo: TaskPost) => Promise<Task>;
   deleteTodo: (id: number) => void;
   changeTodo: (id: number, item: Partial<Task>) => void;
+  removeError: (indexError: number) => void;
 };
 
 export const useTodosStore = create<State & Action>((set) => ({
@@ -24,13 +25,13 @@ export const useTodosStore = create<State & Action>((set) => ({
       const request = await fetch(URLs.todos);
       if (!request.ok) {
         const error = await isError(request);
-        set((state) => ({ errors: [error, ...state.errors] }));
+        set((state) => ({ errors: [ErrorMessage.missingLoadTasks, ...state.errors] }));
         throw new Error(error);
       }
       const todos = await request.json();
       set({ todos: todos });
     } catch (error) {
-      set((state) => ({ errors: [error, ...state.errors] }));
+      set((state) => ({ errors: [error.message, ...state.errors] }));
     }
   },
 
@@ -45,7 +46,7 @@ export const useTodosStore = create<State & Action>((set) => ({
         body: JSON.stringify(todo),
       });
       if (!request.ok) {
-        const error = await isError(request);
+        const error = await isError(request)[0];
         set((state) => ({ errors: [error, ...state.errors] }));
         throw new Error(error);
       }
@@ -99,7 +100,6 @@ export const useTodosStore = create<State & Action>((set) => ({
         throw new Error(error);
       }
       const response: Task = await request.json();
-      // console.log(response);
 
       set((state) => ({
         todos: [...state.todos].map((task) =>
@@ -110,6 +110,10 @@ export const useTodosStore = create<State & Action>((set) => ({
       set((state) => ({ errors: [error, ...state.errors] }));
     }
   },
+
+  removeError: (indexError: number) => {
+    set((state) => ({ errors: [...state.errors].filter((_, index) => indexError !== index) }))
+  }
 }));
 
 async function isError(request: Response): Promise<string> {
