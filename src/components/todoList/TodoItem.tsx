@@ -11,6 +11,7 @@ import { deleteTask, patchTask } from '../../api';
 import { ErrorMessage, TaskActionTypes } from '../../constants';
 import { ErrorContext } from '../errorsElements/context/ErorreContext';
 import { isPassed } from '../../utiles';
+import { useTodosStore } from '../../store';
 
 async function updateTask(
   previousState: ApiReturn | null,
@@ -33,12 +34,12 @@ async function updateTask(
   }
 
   if (taskDue && isPassed(taskDue)) {
-      addError(ErrorMessage.dateIsPassed)
-      return {
+    addError(ErrorMessage.dateIsPassed);
+    return {
       success: false,
       message: ErrorMessage.dateIsPassed,
     };
-    }
+  }
 
   if (taskTitle === null || taskTitle.trim() === '') {
     addError(ErrorMessage.missingTaskTitle);
@@ -61,7 +62,7 @@ async function updateTask(
       body: response.task,
     });
   } else {
-    addError(response.message)
+    addError(response.message);
   }
   setIsEditing(false);
   return {
@@ -76,6 +77,9 @@ export function TodoItem({ task }: { task: Task }) {
 
   const tasksDispatch = useTasksDispatch();
   const { addError } = use(ErrorContext);
+
+  const changeTask = useTodosStore((state) => state.changeTodo);
+  const deleteTask = useTodosStore((state) => state.deleteTodo);
 
   const [isPendingDelete, startTrasition] = useTransition();
   const [_state, formAction, _isPending] = useActionState(
@@ -97,30 +101,22 @@ export function TodoItem({ task }: { task: Task }) {
   const handleChecked = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const target = event.target.checked;
     setIsChecked(target);
+    changeTask(task.id, { done: target });
+    // startTrasition(async () => {
+    //   const response = await patchTask(task.id, { done: target });
 
-    startTrasition(async () => {
-      const response = await patchTask(task.id, { done: target });
-
-      if (response.success) {
-        tasksDispatch({
-          type: TaskActionTypes.change,
-          body: task,
-        });
-      }
-    });
+    //   if (response.success) {
+    //     tasksDispatch({
+    //       type: TaskActionTypes.change,
+    //       body: task,
+    //     });
+    //   }
+    // });
   };
 
   const remove = async () => {
     startTrasition(async () => {
-      const response = await deleteTask(task.id);
-      if (response.success) {
-        tasksDispatch({
-          type: TaskActionTypes.delete,
-          body: task,
-        });
-      } else {
-        addError(response.message);
-      }
+      deleteTask(task.id);
     });
   };
 
