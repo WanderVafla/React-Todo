@@ -8,12 +8,12 @@ import { useTodosStore } from '../../store';
 const sortsOptions: SortOption[] = Object.values(OrderName);
 
 export function TodoList() {
-  const tasksOrigin = useTodosStore((state) => state.todos)
-  const fetchTasks = useTodosStore((state) => state.getLoadTodos)
+  const tasksOrigin = useTodosStore((state) => state.todos);
+  const fetchTasks = useTodosStore((state) => state.getLoadTodos);
 
   const [sortState, setSortState] = useState<SortOption>(sortsOptions[0]);
 
-  const tasks = sortTasks(tasksOrigin, sortState);
+  const tasks: Task[] = sortTasks(tasksOrigin, sortState);
   const [filterState, setFilterState] = useFilter(FiltersNames);
 
   const handleSelectedOption = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -21,9 +21,8 @@ export function TodoList() {
     setSortState(value);
   };
   useEffect(() => {
-    fetchTasks()
-  }, [fetchTasks])
-
+    fetchTasks();
+  }, [fetchTasks]);
 
   return (
     <>

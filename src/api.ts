@@ -12,7 +12,7 @@ export async function getTasks(): Promise<Task[]> {
     const errorMessage =
       errorBody.message || errorBody.error || `Error Server: ${request.status}`;
     console.error(errorMessage);
-    
+
     throw new Error(ErrorMessage.missingLoadTasks);
   }
   return await request.json();
@@ -31,8 +31,10 @@ export async function postTask(task: TaskPost): Promise<ApiReturn> {
     if (!request.ok) {
       const errorBody = await request.json().catch(() => ({}));
       const errorMessage =
-      errorBody.message || errorBody.error || `Error Server: ${request.status}`;
-      console.error(errorMessage)
+        errorBody.message ||
+        errorBody.error ||
+        `Error Server: ${request.status}`;
+      console.error(errorMessage);
       throw new Error(ErrorMessage.missingAddNewTask);
     }
     if (request.status === 201) {
@@ -71,8 +73,7 @@ export async function deleteTask(id: number) {
         const errorData = await request.json();
         errorMessage = errorData.message || JSON.stringify(errorData);
         console.error(errorData);
-        throw new Error(ErrorMessage.missingDeleteTask)
-        
+        throw new Error(ErrorMessage.missingDeleteTask);
       } else {
         errorMessage = `Server error: ${request.status} ${request.statusText}`;
       }
@@ -125,8 +126,12 @@ export async function patchTask(id: number, body: Partial<Task>) {
           ? String(response.message)
           : JSON.stringify(response);
 
-          console.error(errorMessage);
-      return { success: false, message: ErrorMessage.missingEditTask, task: null };
+      console.error(errorMessage);
+      return {
+        success: false,
+        message: ErrorMessage.missingEditTask,
+        task: null,
+      };
     }
 
     return {
