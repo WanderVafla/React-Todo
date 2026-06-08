@@ -25,3 +25,23 @@ export interface ErrorsContextType {
   addError: (error: string) => void;
   removeError: (indexError: number) => void;
 }
+
+interface ApiSuccessReturn {
+  success: 'success';
+  task?: Task;
+}
+
+interface ApiErrorReturn {
+  success: 'error';
+  error: string;
+}
+
+interface ApiErrorLoadingReturn {
+  success: 'loadError';
+  error: string;
+}
+
+export type ApiReturn =
+  | ApiSuccessReturn
+  | ApiErrorReturn
+  | ApiErrorLoadingReturn;
