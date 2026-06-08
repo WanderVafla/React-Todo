@@ -10,23 +10,20 @@ import { isPassed } from '../../utiles';
 import { useTodosStore } from '../../store';
 
 async function updateTask(
-  previousState: string,
+  previousState: number,
   formData: FormData,
   setIsEditing: Dispatch<boolean>,
-): Promise<string> {
+): Promise<number> {
   const taskTitle = formData.get('title') as string | null;
   const taskContent = formData.get('content') as string | null;
   const taskDue = formData.get('due') as string | null;
 
   if (!previousState) {
+    useTodosStore.getState().addError(ErrorMessage.missingTaksId)
     throw new Error("Not have task id")
   }
 
   const id = previousState;
-  if (!id) {
-    useTodosStore.getState().addError(ErrorMessage.missingTaksId)
-    return id;
-  }
 
   if (taskDue && isPassed(taskDue)) {
     useTodosStore.getState().addError(ErrorMessage.dateIsPassed)
