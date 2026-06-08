@@ -1,52 +1,41 @@
 import {
-  use,
   useActionState,
   useState,
   useTransition,
   type Dispatch,
 } from 'react';
-import type { ApiReturn, Task, TaskAction } from '../../types';
-import { useTasksDispatch } from '../../hooks/useTasks';
-import { deleteTask, patchTask } from '../../api';
-import { ErrorMessage, TaskActionTypes } from '../../constants';
-import { ErrorContext } from '../errorsElements/context/ErorreContext';
+import type { Task } from '../../types';
+import { ErrorMessage } from '../../constants';
 import { isPassed } from '../../utiles';
 import { useTodosStore } from '../../store';
 
 async function updateTask(
-  previousState: ApiReturn | null,
+  previousState: string,
   formData: FormData,
-  tasksDispatch: Dispatch<TaskAction>,
   setIsEditing: Dispatch<boolean>,
-  addError: (error: string) => void,
-) {
+): Promise<string> {
   const taskTitle = formData.get('title') as string | null;
   const taskContent = formData.get('content') as string | null;
   const taskDue = formData.get('due') as string | null;
 
-  const id = previousState?.message;
+  if (!previousState) {
+    throw new Error("Not have task id")
+  }
+
+  const id = previousState;
   if (!id) {
-    addError(ErrorMessage.missingTaksId);
-    return {
-      success: false,
-      message: ErrorMessage.missingTaksId,
-    };
+    useTodosStore.getState().addError(ErrorMessage.missingTaksId)
+    return id;
   }
 
   if (taskDue && isPassed(taskDue)) {
-    addError(ErrorMessage.dateIsPassed);
-    return {
-      success: false,
-      message: ErrorMessage.dateIsPassed,
-    };
+    useTodosStore.getState().addError(ErrorMessage.dateIsPassed)
+    return id
   }
 
   if (taskTitle === null || taskTitle.trim() === '') {
-    addError(ErrorMessage.missingTaskTitle);
-    return {
-      success: false,
-      message: ErrorMessage.missingTaskTitle,
-    };
+    useTodosStore.getState().addError(ErrorMessage.missingTaskTitle)
+    return id;
   }
 
   const newTask: Partial<Task> = {
@@ -54,29 +43,15 @@ async function updateTask(
     content: taskContent?.trim() ? taskContent : null,
     due_date: taskDue !== '' ? taskDue : null,
   };
-  const response: ApiReturn = await patchTask(Number(id), newTask);
+  useTodosStore.getState().changeTodo(Number(id), newTask)
 
-  if (response.success && response.task) {
-    tasksDispatch({
-      type: TaskActionTypes.change,
-      body: response.task,
-    });
-  } else {
-    addError(response.message);
-  }
   setIsEditing(false);
-  return {
-    success: response.success,
-    message: id,
-  };
+  return id;
 }
 
 export function TodoItem({ task }: { task: Task }) {
   const [isChecked, setIsChecked] = useState(task.done);
   const [isEditing, setIsEditing] = useState(false);
-
-  const tasksDispatch = useTasksDispatch();
-  const { addError } = use(ErrorContext);
 
   const changeTask = useTodosStore((state) => state.changeTodo);
   const deleteTask = useTodosStore((state) => state.deleteTodo);
@@ -87,31 +62,16 @@ export function TodoItem({ task }: { task: Task }) {
       updateTask(
         previousState,
         formData,
-        tasksDispatch,
         setIsEditing,
-        addError,
       ),
-    {
-      success: false,
-      message: String(task.id),
-      task: task,
-    },
+    
+      task.id
   );
 
   const handleChecked = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const target = event.target.checked;
     setIsChecked(target);
     changeTask(task.id, { done: target });
-    // startTrasition(async () => {
-    //   const response = await patchTask(task.id, { done: target });
-
-    //   if (response.success) {
-    //     tasksDispatch({
-    //       type: TaskActionTypes.change,
-    //       body: task,
-    //     });
-    //   }
-    // });
   };
 
   const remove = async () => {
