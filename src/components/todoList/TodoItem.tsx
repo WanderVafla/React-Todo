@@ -1,7 +1,6 @@
 import {
   useActionState,
   useState,
-  useTransition,
   type Dispatch,
 } from 'react';
 import type { Task } from '../../types';
@@ -53,9 +52,8 @@ export function TodoItem({ task }: { task: Task }) {
   const changeTask = useTodosStore((state) => state.changeTodo);
   const deleteTask = useTodosStore((state) => state.deleteTodo);
 
-  const [isPendingDelete, startTrasition] = useTransition();
   const [_state, formAction, _isPending] = useActionState(
-    (previousState, formData) =>
+    (previousState: number, formData: FormData) =>
       updateTask(
         previousState,
         formData,
@@ -71,10 +69,8 @@ export function TodoItem({ task }: { task: Task }) {
     changeTask(task.id, { done: target });
   };
 
-  const remove = async () => {
-    startTrasition(async () => {
-      deleteTask(task.id);
-    });
+  const remove = () => {
+    deleteTask(task.id);
   };
 
   const toggleEditing = async () => {
@@ -96,7 +92,6 @@ export function TodoItem({ task }: { task: Task }) {
               <span>{task.title}</span>
             </div>
             <span>{!task.due_date ? 'no date' : task.due_date}</span>
-            {!isPendingDelete ? (
               <div>
                 <button type="button" onClick={toggleEditing}>
                   Edit
@@ -105,9 +100,6 @@ export function TodoItem({ task }: { task: Task }) {
                   Remove
                 </button>
               </div>
-            ) : (
-              '...'
-            )}
           </span>
           <div>{task.content && task.content}</div>
         </div>
