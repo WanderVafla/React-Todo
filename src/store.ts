@@ -37,7 +37,7 @@ export const useTodosStore = create<State & Action>((set) => ({
     }
   },
 
-  addTodo: async (todo: TaskPost): Promise<Task> => {
+  addTodo: async (todo: TaskPost): Promise<Task | null> => {
     try {
       const request = await fetch(URLs.todos, {
         method: 'POST',
@@ -48,21 +48,19 @@ export const useTodosStore = create<State & Action>((set) => ({
         body: JSON.stringify(todo),
       });
       if (!request.ok) {
-        const error = await isError(request)[0];
+        const error = await isError(request);
         set((state) => ({ errors: [ErrorMessage.missingAddNewTask, ...state.errors] }));
         throw new Error(error);
       }
       const response: Task = await request.json();
       console.log(response);
       
-      const task: Task = Array.isArray(response) ? response[0] : response
-      console.log(task);
-      
+      const task: Task = Array.isArray(response) ? response[0] : response      
       
       set((state) => ({ todos: [task, ...state.todos] }));
       return task
     } catch (error) {
-      set((state) => ({ errors: [error, ...state.errors] }));
+    set({ errorLoading: ErrorMessage.missingLoadTasks });
     }
   },
 
@@ -80,7 +78,7 @@ export const useTodosStore = create<State & Action>((set) => ({
         todos: [...state.todos].filter((task) => task.id !== id),
       }));
     } catch (error) {
-      set((state) => ({ errors: [error, ...state.errors] }));
+      set({ errorLoading: ErrorMessage.missingLoadTasks });
     }
   },
 
@@ -108,7 +106,7 @@ export const useTodosStore = create<State & Action>((set) => ({
         ),
       }));
     } catch (error) {
-      set((state) => ({ errors: [error, ...state.errors] }));
+      set({ errorLoading: ErrorMessage.missingLoadTasks });
     }
   },
 
