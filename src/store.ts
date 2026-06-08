@@ -3,13 +3,15 @@ import { ErrorMessage, URLs } from './constants';
 import type { Task, TaskPost } from './types';
 
 type State = {
-  todos: Task[];
+  todos: Task[] | null;
   errors: string[];
+  promis: Promise<void> | null;
   errorLoading: string | null;
 };
 
 type Action = {
-  getLoadTodos: () => void;
+  fetchTodos: () => Promise<void>;
+  loadTodos: () => Task[]
   addTodo: (todo: TaskPost) => Promise<Task>;
   deleteTodo: (id: number) => void;
   changeTodo: (id: number, item: Partial<Task>) => void;
@@ -17,24 +19,37 @@ type Action = {
   removeError: (indexError: number) => void;
 };
 
-export const useTodosStore = create<State & Action>((set) => ({
+export const useTodosStore = create<State & Action>((set, get) => ({
   // States
-  todos: [],
+  todos: null,
   errors: [],
+  promis: null,
   errorLoading: null,
 
-  getLoadTodos: async () => {
+  fetchTodos: () => {
     try {
-      const request = await fetch(URLs.todos);
-      if (!request.ok) {
-        const error = await isError(request);
-        throw new Error(error);
-      }
-      const todos = await request.json();
-      set({ todos: todos });
+      if (get().promis) return get().promis
+      const fetchPromis = fetch(URLs.todos)
+      .then((res) => {
+        if (!res.ok) {
+            throw new Error(ErrorMessage.missingLoadTasks);
+        } 
+        return res.json()
+      })
+      .then((data) => set({ todos: data }))
+        set({ promis: fetchPromis })
+
+      return fetchPromis
     } catch (error) {
+        set({ promis: null })
       set({ errorLoading: ErrorMessage.missingLoadTasks });
     }
+  },
+
+  loadTodos: () => {
+    const {todos, fetchTodos} = get()
+    if (todos) return todos;
+    throw fetchTodos()
   },
 
   addTodo: async (todo: TaskPost): Promise<Task | null> => {
@@ -60,7 +75,8 @@ export const useTodosStore = create<State & Action>((set) => ({
       set((state) => ({ todos: [task, ...state.todos] }));
       return task
     } catch (error) {
-    set({ errorLoading: ErrorMessage.missingLoadTasks });
+      console.error(error);
+      set({ errorLoading: ErrorMessage.missingLoadTasks });
     }
   },
 
@@ -78,6 +94,7 @@ export const useTodosStore = create<State & Action>((set) => ({
         todos: [...state.todos].filter((task) => task.id !== id),
       }));
     } catch (error) {
+      console.error(error);
       set({ errorLoading: ErrorMessage.missingLoadTasks });
     }
   },
@@ -106,6 +123,7 @@ export const useTodosStore = create<State & Action>((set) => ({
         ),
       }));
     } catch (error) {
+      console.error(error);
       set({ errorLoading: ErrorMessage.missingLoadTasks });
     }
   },

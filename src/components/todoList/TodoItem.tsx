@@ -19,7 +19,7 @@ async function updateTask(
 
   if (!previousState) {
     useTodosStore.getState().addError(ErrorMessage.missingTaksId)
-    throw new Error("Not have task id")
+    throw new Error(ErrorMessage.missingTaksId)
   }
 
   const id = previousState;

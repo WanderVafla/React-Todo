@@ -1,4 +1,4 @@
-import { useEffect, useState, type ChangeEvent } from 'react';
+import { useState, type ChangeEvent } from 'react';
 import { TodoItem } from './TodoItem';
 import { FiltersNames, OrderName } from '../../constants';
 import type { SortOption, Task } from '../../types';
@@ -8,8 +8,7 @@ import { useTodosStore } from '../../store';
 const sortsOptions: SortOption[] = Object.values(OrderName);
 
 export function TodoList() {
-  const tasksOrigin = useTodosStore((state) => state.todos);
-  const fetchTasks = useTodosStore((state) => state.getLoadTodos);
+  const loadTodos = useTodosStore((state) => state.loadTodos());
   const errorLoading = useTodosStore((state) => state.errorLoading);
 
   if (errorLoading) {
@@ -18,16 +17,13 @@ export function TodoList() {
 
   const [sortState, setSortState] = useState<SortOption>(sortsOptions[0]);
 
-  const tasks: Task[] = sortTasks(tasksOrigin, sortState);
+  const tasks: Task[] = sortTasks(loadTodos, sortState);
   const [filterState, setFilterState] = useFilter(FiltersNames);
 
   const handleSelectedOption = (event: ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value as SortOption;
     setSortState(value);
   };
-  useEffect(() => {
-    fetchTasks();
-  }, [fetchTasks]);
 
   return (
     <>
