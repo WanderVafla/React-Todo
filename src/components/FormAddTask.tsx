@@ -4,15 +4,15 @@ import {
   useRef,
   useState,
 } from 'react';
-import type { ApiReturn, Task, TaskPost } from '../types';
+import type { TaskPost } from '../types';
 import { ErrorMessage } from '../constants';
 import { isPassed } from '../utiles';
 import { useTodosStore } from '../store';
 
 async function addNewTask(
-  _previousState: ApiReturn | null,
+  _previousState: null,
   formData: FormData
-): Promise<ApiReturn> {
+) {
   const taskTitle = formData.get('title') as string;
   const taskContent = formData.get('content') as string;
   const taskDue = formData.get('due') as string;
@@ -28,12 +28,6 @@ async function addNewTask(
 
   if (taskDue && isPassed(taskDue)) {
     useTodosStore.getState().addError(ErrorMessage.dateIsPassed)
-    
-    return {
-      success: false,
-      message: ErrorMessage.dateIsPassed,
-      task: null,
-    };
   }
 
   const newTask: TaskPost = {
@@ -43,13 +37,7 @@ async function addNewTask(
     done: false,
   };
 
-  const repsonse: Task = await useTodosStore.getState().addTodo(newTask)
-
-  return {
-    success: true,
-    message: null,
-    task: repsonse
-  };
+  await useTodosStore.getState().addTodo(newTask)
 }
 
 export function FormAddTask() {
@@ -58,12 +46,7 @@ export function FormAddTask() {
   const formRef = useRef<HTMLFormElement | null>(null);
 
   const [_state, formAction, isPending] = useActionState(
-      addNewTask,
-    {
-      success: null,
-      message: '',
-      task: null,
-    },
+      addNewTask,null
   );
   // useEffect also for do animation
   useEffect(() => {
