@@ -4,19 +4,16 @@ import {
   useEffect,
   useRef,
   useState,
-  type Dispatch,
 } from 'react';
-import type { ApiReturn, TaskAction, TaskPost } from '../types';
-import { postTask } from '../api';
-import { useTasksDispatch } from '../hooks/useTasks';
-import { ErrorMessage, TaskActionTypes } from '../constants';
+import type { ApiReturn, Task, TaskPost } from '../types';
+import { ErrorMessage } from '../constants';
 import { ErrorContext } from './errorsElements/context/ErorreContext';
 import { isPassed } from '../utiles';
+import { useTodosStore } from '../store';
 
 async function addNewTask(
   _previousState: ApiReturn | null,
   formData: FormData,
-  tasksDispatch: Dispatch<TaskAction>,
   addError: (error: string) => void,
 ): Promise<ApiReturn> {
   const taskTitle = formData.get('title') as string;
@@ -48,18 +45,13 @@ async function addNewTask(
     done: false,
   };
 
-  const response: ApiReturn = await postTask(newTask);
-  if (response.success) {
-    tasksDispatch({
-      type: TaskActionTypes.add,
-      body: Array.isArray(response.task) ? response.task[0] : response.task,
-    });
-  }
-  if (!response.success) {
-    addError(response.message);
-  }
+  const repsonse: Task = await useTodosStore.getState().addTodo(newTask)
 
-  return response;
+  return {
+    success: true,
+    message: null,
+    task: repsonse
+  };
 }
 
 export function FormAddTask() {
@@ -67,13 +59,12 @@ export function FormAddTask() {
   const [isContentVisible, setIsContentVisible] = useState(false);
   const formRef = useRef<HTMLFormElement | null>(null);
 
-  const tasksDispatch = useTasksDispatch();
   const errorsContext = use(ErrorContext);
 
   const { addError } = errorsContext;
   const [_state, formAction, isPending] = useActionState(
     (previousState, formData) =>
-      addNewTask(previousState, formData, tasksDispatch, addError),
+      addNewTask(previousState, formData, addError),
     {
       success: null,
       message: '',

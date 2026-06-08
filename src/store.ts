@@ -9,7 +9,7 @@ type State = {
 
 type Action = {
   getLoadTodos: () => void;
-  addTodo: (todo: TaskPost) => void;
+  addTodo: (todo: TaskPost) => Promise<Task>;
   deleteTodo: (id: number) => void;
   changeTodo: (id: number, item: Partial<Task>) => void;
 };
@@ -34,7 +34,7 @@ export const useTodosStore = create<State & Action>((set) => ({
     }
   },
 
-  addTodo: async (todo: TaskPost) => {
+  addTodo: async (todo: TaskPost): Promise<Task> => {
     try {
       const request = await fetch(URLs.todos, {
         method: 'POST',
@@ -50,7 +50,14 @@ export const useTodosStore = create<State & Action>((set) => ({
         throw new Error(error);
       }
       const response: Task = await request.json();
-      set((state) => ({ todos: [response, ...state.todos] }));
+      console.log(response);
+      
+      const task: Task = Array.isArray(response) ? response[0] : response
+      console.log(task);
+      
+      
+      set((state) => ({ todos: [task, ...state.todos] }));
+      return task
     } catch (error) {
       set((state) => ({ errors: [error, ...state.errors] }));
     }
