@@ -1,5 +1,4 @@
 import {
-  use,
   useActionState,
   useEffect,
   useRef,
@@ -7,21 +6,19 @@ import {
 } from 'react';
 import type { ApiReturn, Task, TaskPost } from '../types';
 import { ErrorMessage } from '../constants';
-import { ErrorContext } from './errorsElements/context/ErorreContext';
 import { isPassed } from '../utiles';
 import { useTodosStore } from '../store';
 
 async function addNewTask(
   _previousState: ApiReturn | null,
-  formData: FormData,
-  addError: (error: string) => void,
+  formData: FormData
 ): Promise<ApiReturn> {
   const taskTitle = formData.get('title') as string;
   const taskContent = formData.get('content') as string;
   const taskDue = formData.get('due') as string;
 
   if (taskTitle.trim() === '' || taskTitle === null) {
-    addError(ErrorMessage.missingTaskTitle);
+    useTodosStore.getState().addError(ErrorMessage.missingTaskTitle)
     return {
       success: false,
       message: ErrorMessage.missingTaskTitle,
@@ -30,7 +27,8 @@ async function addNewTask(
   }
 
   if (taskDue && isPassed(taskDue)) {
-    addError(ErrorMessage.dateIsPassed);
+    useTodosStore.getState().addError(ErrorMessage.dateIsPassed)
+    
     return {
       success: false,
       message: ErrorMessage.dateIsPassed,
@@ -59,12 +57,8 @@ export function FormAddTask() {
   const [isContentVisible, setIsContentVisible] = useState(false);
   const formRef = useRef<HTMLFormElement | null>(null);
 
-  const errorsContext = use(ErrorContext);
-
-  const { addError } = errorsContext;
   const [_state, formAction, isPending] = useActionState(
-    (previousState, formData) =>
-      addNewTask(previousState, formData, addError),
+      addNewTask,
     {
       success: null,
       message: '',

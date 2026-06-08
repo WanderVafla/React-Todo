@@ -12,6 +12,7 @@ type Action = {
   addTodo: (todo: TaskPost) => Promise<Task>;
   deleteTodo: (id: number) => void;
   changeTodo: (id: number, item: Partial<Task>) => void;
+  addError: (message: string) => void;
   removeError: (indexError: number) => void;
 };
 
@@ -77,7 +78,6 @@ export const useTodosStore = create<State & Action>((set) => ({
       set((state) => ({
         todos: [...state.todos].filter((task) => task.id !== id),
       }));
-      console.log('tasks deleted');
     } catch (error) {
       set((state) => ({ errors: [error, ...state.errors] }));
     }
@@ -109,6 +109,10 @@ export const useTodosStore = create<State & Action>((set) => ({
     } catch (error) {
       set((state) => ({ errors: [error, ...state.errors] }));
     }
+  },
+
+  addError: (message: string) => {
+    set((state) => ({errors: [message, ...state.errors]}))
   },
 
   removeError: (indexError: number) => {
