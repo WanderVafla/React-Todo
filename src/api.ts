@@ -1,145 +1,103 @@
-import { ErrorMessage } from './constants';
+import { ErrorMessage, URLs } from './constants';
 import type { ApiReturn, Task, TaskPost } from './types';
 
-const todos_url = 'https://api.todos.in.jt-lab.ch/todos';
-
-export async function getTasks(): Promise<Task[]> {
-  const request = await fetch(`${todos_url}`, {
-    method: 'GET',
-  });
-  if (!request.ok) {
-    const errorBody = await request.json().catch(() => ({}));
-    const errorMessage =
-      errorBody.message || errorBody.error || `Error Server: ${request.status}`;
-    console.error(errorMessage);
-    
-    throw new Error(ErrorMessage.missingLoadTasks);
-  }
-  return await request.json();
-}
-
-export async function postTask(task: TaskPost): Promise<ApiReturn> {
+export async function postTodo(todo: TaskPost): Promise<ApiReturn> {
   try {
-    const request = await fetch(`${todos_url}`, {
+    const request = await fetch(URLs.todos, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Prefer: 'return=representation',
       },
-      body: JSON.stringify(task),
+      body: JSON.stringify(todo),
     });
     if (!request.ok) {
-      const errorBody = await request.json().catch(() => ({}));
-      const errorMessage =
-      errorBody.message || errorBody.error || `Error Server: ${request.status}`;
-      console.error(errorMessage)
-      throw new Error(ErrorMessage.missingAddNewTask);
-    }
-    if (request.status === 201) {
-      const response: Task | Task[] = await request.json();
+      const error = await isError(request);
       return {
-        success: true,
-        message: null,
-        task: Array.isArray(response) ? response[0] : response,
+        success: 'error',
+        error: error,
       };
     }
+    const response: Task = await request.json();
+    console.log(response);
+
+    const task: Task = Array.isArray(response) ? response[0] : response;
+
     return {
-      success: false,
-      message: 'Unexpected response status',
-      task: null,
+      success: 'success',
+      task: task,
     };
-  } catch (e) {
-    console.error(e);
+  } catch (error) {
+    console.error(error);
     return {
-      success: false,
-      message: e instanceof Error ? e.message : 'An unknown error occurred',
-      task: null,
+      success: 'loadError',
+      error: ErrorMessage.missingLoadTasks,
     };
   }
 }
 
-export async function deleteTask(id: number) {
+export async function deleteTask(id: number): Promise<ApiReturn> {
   try {
-    const request = await fetch(`${todos_url}?id=eq.${id}`, {
+    const request = await fetch(`${URLs.todos}?id=eq.${id}`, {
       method: 'DELETE',
     });
     if (!request.ok) {
-      let errorMessage = 'Failed to delete task';
-
-      const contentType = request.headers.get('content-type');
-      if (contentType && contentType.includes('application/json')) {
-        const errorData = await request.json();
-        errorMessage = errorData.message || JSON.stringify(errorData);
-        console.error(errorData);
-        throw new Error(ErrorMessage.missingDeleteTask)
-        
-      } else {
-        errorMessage = `Server error: ${request.status} ${request.statusText}`;
-      }
-
-      // const error = await request.json();
-      console.error(errorMessage);
-      return { success: false, message: errorMessage, task: null };
-    }
-    if (request.status === 204) {
+      const error = await isError(request);
+      console.error(error);
       return {
-        success: true,
-        message: null,
-        task: null,
+        success: 'error',
+        error: error,
       };
     }
     return {
-      success: false,
-      message: 'Unexpected response status',
-      task: null,
+      success: 'success',
     };
-  } catch (e) {
-    console.error(e);
+  } catch (error) {
+    console.error(error);
     return {
-      success: false,
-      message: e instanceof Error ? e.message : 'An unknown error occurred',
-      task: null,
+      success: 'loadError',
+      error: ErrorMessage.missingLoadTasks,
     };
   }
 }
 
-export async function patchTask(id: number, body: Partial<Task>) {
+export async function patchTask(id: number, item: Partial<Task>) {
   try {
-    const request = await fetch(`${todos_url}?id=eq.${id}`, {
+    const request = await fetch(`${URLs.todos}?id=eq.${id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
         Prefer: 'return=representation',
         Accept: 'application/vnd.pgrst.object+json',
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify(item),
     });
-    const response = await request.json();
-
     if (!request.ok) {
-      console.error(response);
-      const errorMessage =
-        typeof response === 'object' &&
-        response !== null &&
-        'message' in response
-          ? String(response.message)
-          : JSON.stringify(response);
-
-          console.error(errorMessage);
-      return { success: false, message: ErrorMessage.missingEditTask, task: null };
+      const error = await isError(request);
+      return {
+        success: 'error',
+        error: error,
+      };
     }
+    const response: Task = await request.json();
 
     return {
-      success: true,
-      message: null,
+      success: 'success',
       task: response,
     };
-  } catch (e) {
-    console.error(e);
+  } catch (error) {
+    console.error(error);
     return {
-      success: false,
-      message: e instanceof Error ? e.message : 'An unknown error occurred',
-      task: null,
+      success: 'loadError',
+      error: ErrorMessage.missingLoadTasks,
     };
   }
+}
+
+async function isError(request: Response): Promise<string> {
+  const errorBody = await request.json();
+  const errorMessage =
+    errorBody.message || errorBody.error || `Error Serve: ${errorBody.status}`;
+  console.error(errorMessage);
+  return errorMessage;
 }

@@ -1,6 +1,6 @@
 * {
   --background-color: linear-gradient(to bottom, #020917, #101725);
-  --background-color-error: rgb(149, 0, 0)
+  --background-color-error: rgb(149, 0, 0);
 }
 
 body {
@@ -152,9 +152,8 @@ main {
 
   padding: 1em;
   gap: 0.2em;
-  
-  background: transparent;
 
+  background: transparent;
 }
 
 #error-frame:empty {
@@ -172,8 +171,6 @@ main {
   box-shadow: 10px 10px 100px;
   border-radius: 30px;
   align-items: center;
-
-
 }
 
 .error-item button {

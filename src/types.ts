@@ -11,12 +11,6 @@ export interface Task extends TaskPost {
   id: number;
 }
 
-export type ApiReturn = {
-  success: boolean;
-  message: string | null;
-  task: Task | Task[] | null;
-};
-
 export type FilterDoned = (typeof FiltersNames)[keyof typeof FiltersNames];
 export type SortOption = (typeof OrderName)[keyof typeof OrderName];
 
@@ -31,3 +25,23 @@ export interface ErrorsContextType {
   addError: (error: string) => void;
   removeError: (indexError: number) => void;
 }
+
+interface ApiSuccessReturn {
+  success: 'success';
+  task?: Task;
+}
+
+interface ApiErrorReturn {
+  success: 'error';
+  error: string;
+}
+
+interface ApiErrorLoadingReturn {
+  success: 'loadError';
+  error: string;
+}
+
+export type ApiReturn =
+  | ApiSuccessReturn
+  | ApiErrorReturn
+  | ApiErrorLoadingReturn;
