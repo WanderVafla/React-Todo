@@ -94,6 +94,30 @@ export async function patchTask(id: number, item: Partial<Task>) {
   }
 }
 
+export async function deleteAllTasks() {
+  try {
+    const request = await fetch(`${URLs.todos}`, {
+      method: 'DELETE'
+    })
+    if (!request.ok) {
+      const error = await isError(request);
+      return {
+        success: 'error',
+        error: error,
+      };
+    }
+    return {
+      success: 'success',
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      success: 'loadError',
+      error: ErrorMessage.missingLoadTasks,
+    };
+  }
+}
+
 async function isError(request: Response): Promise<string> {
   const errorBody = await request.json();
   const errorMessage =
