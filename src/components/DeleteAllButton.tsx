@@ -1,25 +1,26 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 import { useTodosStore } from '../store';
 import { ErrorMessage } from '../constants';
 import type { Task } from '../types';
 
 export function DeleteAllDialog() {
-  const [opened, isOpened] = useState(false);
   const dialogRef = useRef<HTMLDialogElement | null>(null);
 
   const tasks: Task[] | null = useTodosStore((state) => state.todos);
   const deleteallTodos = useTodosStore((state) => state.deleteAllTodos);
   const addError = useTodosStore((state) => state.addError);
 
-  useEffect(() => {
+  const closeModal = () => {
     if (dialogRef.current !== null) {
-      if (opened) {
-        dialogRef.current.showModal();
-      } else {
-        dialogRef.current.close();
-      }
+      dialogRef.current.close()
     }
-  }, [opened, dialogRef]);
+  }
+
+  const openModal = () => {
+    if (dialogRef.current !== null) {
+      dialogRef.current.showModal()
+    }
+  }
 
   return (
     <>
@@ -28,7 +29,7 @@ export function DeleteAllDialog() {
         type="button"
         onClick={() => {
           if (tasks !== null && tasks.length > 0) {
-            isOpened(true);
+            openModal()
           } else {
             addError(ErrorMessage.haveNotTasks);
           }
@@ -43,13 +44,13 @@ export function DeleteAllDialog() {
           <button
             type="button"
             onClick={() => {
-              isOpened(false);
               deleteallTodos();
+              closeModal();
             }}
           >
             Yes
           </button>
-          <button type="button" onClick={() => isOpened(false)}>
+          <button type="button" onClick={closeModal}>
             No
           </button>
         </div>
