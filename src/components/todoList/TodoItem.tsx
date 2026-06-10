@@ -90,10 +90,10 @@ function EditModal({ taskName, due, content, taskId }: { taskName: string, due: 
                 </button>
             </div>
               </div>
+            </div>
             <div className='todo-iten-content'>
               <textarea name='content' defaultValue={content} />
           </div>
-            </div>
           </div>
         </form>
     </dialog>
