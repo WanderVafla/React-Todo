@@ -121,7 +121,7 @@ export const useTodosStore = create<State & Action>((set, get) => ({
     }
     if (response.success === 'error') {
       set((state) => ({
-        errors: [ErrorMessage.missingAddNewTask, ...state.errors],
+        errors: [ErrorMessage.missingDeleteTask, ...state.errors],
       }));
       throw new Error(response.error);
     }
