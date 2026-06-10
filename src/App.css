@@ -42,6 +42,16 @@ main {
   gap: 1rem;
 }
 
+dialog {
+    background: none;
+    border: none;
+    outline: none;
+}
+
+dialog::backdrop {
+  background-color: #000000bb;
+}
+
 .content {
   display: flex;
   min-height: 100vh;
@@ -95,23 +105,16 @@ main {
     align-items: start;
 }
 
-.todo-item {
+.todo-item { 
+    height: auto;
+    width: 20rem;
     margin-top: 1em;
 
-    align-items: center;
-    
-    width: 20rem;
-    
-    border-radius: 15px;
-    background-color: blue;
-    
-    height: auto;
-
+    align-items: center;    
     break-inside: avoid;
-}
-
-.todo-item-title {
-    grid-area: title;
+    
+    background-color: blue;
+    border-radius: 15px;
 }
 
 .todo-item-header {
@@ -121,27 +124,26 @@ main {
 .todo-item-data {
     justify-content: space-between;
     display: flex;
-    grid-area: data;
 }
 
 .todo-iten-content {
-    display: flexbox;
-    width: 20rem;
     word-wrap: break-word;
     
     padding: 0.5em;
     background-color: white;
     color: black;
-
-    justify-content: flex-end;
     
     border-radius: 0 0 15px 15px;
-
-    grid-area: content;
 }
 
 .todo-iten-content:empty {
     display: none;
+}
+
+.todo-iten-content > textarea {
+    width: 100%;
+    outline: none;
+    border: none;
 }
 
 /* Error Frame */
@@ -217,10 +219,6 @@ main {
   width: 70%;
   display: flex;
   justify-content: space-between;
-}
-
-#delete-all-modal::backdrop {
-  background-color: #000000bb;
 }
 
 #delete-all-modal button {
