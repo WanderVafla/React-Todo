@@ -115,9 +115,9 @@ export const useTodosStore = create<State & Action>((set, get) => ({
   deleteAllTodos: async () => {
     const response = await deleteAllTasks();
     if (response.success === 'success') {
-      set(({
+      set({
         todos: [],
-      }));
+      });
     }
     if (response.success === 'error') {
       set((state) => ({

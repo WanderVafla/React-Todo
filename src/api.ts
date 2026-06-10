@@ -97,8 +97,8 @@ export async function patchTask(id: number, item: Partial<Task>) {
 export async function deleteAllTasks() {
   try {
     const request = await fetch(`${URLs.todos}`, {
-      method: 'DELETE'
-    })
+      method: 'DELETE',
+    });
     if (!request.ok) {
       const error = await isError(request);
       return {
