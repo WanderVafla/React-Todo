@@ -24,6 +24,7 @@ export function DeleteAllDialog() {
   return (
     <>
       <button
+        id='btn-delete-all'
         type="button"
         onClick={() => {
           if (tasks !== null && tasks.length > 0) {
