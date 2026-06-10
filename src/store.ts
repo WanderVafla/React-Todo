@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { ErrorMessage, URLs } from './constants';
 import type { Task, TaskPost } from './types';
-import { deleteTask, patchTask, postTodo } from './api';
+import { deleteAllTasks, deleteTask, patchTask, postTodo } from './api';
 
 type State = {
   todos: Task[] | null;
@@ -18,6 +18,7 @@ type Action = {
   changeTodo: (id: number, item: Partial<Task>) => void;
   addError: (message: string) => void;
   removeError: (indexError: number) => void;
+  deleteAllTodos: () => void;
 };
 
 export const useTodosStore = create<State & Action>((set, get) => ({
@@ -102,6 +103,25 @@ export const useTodosStore = create<State & Action>((set, get) => ({
     if (response.success === 'error') {
       set((state) => ({
         errors: [ErrorMessage.missingAddNewTask, ...state.errors],
+      }));
+      throw new Error(response.error);
+    }
+    if (response.success === 'loadError') {
+      set({ errorLoading: ErrorMessage.missingLoadTasks });
+      throw new Error(response.error);
+    }
+  },
+
+  deleteAllTodos: async () => {
+    const response = await deleteAllTasks();
+    if (response.success === 'success') {
+      set({
+        todos: [],
+      });
+    }
+    if (response.success === 'error') {
+      set((state) => ({
+        errors: [ErrorMessage.missingDeleteTask, ...state.errors],
       }));
       throw new Error(response.error);
     }

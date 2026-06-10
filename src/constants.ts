@@ -30,6 +30,7 @@ export const ErrorMessage = {
     'A task is not be delete. Please check your connection to Internet and try again!',
   missingLoadTasks:
     'The tasks in be loading. Please check your connection to Internet and try again!',
+  haveNotTasks: 'Have not the tasks in list!',
 };
 
 export const URLs = {

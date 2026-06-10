@@ -6,6 +6,7 @@ import { Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { ErrorFallback } from './components/errorsElements/ErrorFallback';
 import { ErrorFrame } from './components/errorsElements/ErrorFrame';
+import { DeleteAllDialog } from './components/DeleteAllButton';
 
 const App = () => {
   return (
@@ -25,7 +26,7 @@ const App = () => {
             <TodoList />
           </ErrorBoundary>
         </Suspense>
-        <button type="button">Delete All</button>
+        <DeleteAllDialog />
       </main>
     </>
   );
