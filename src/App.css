@@ -1,15 +1,40 @@
-* {
-  --background-color: linear-gradient(to bottom, #020917, #101725);
-  --background-color-error: rgb(149, 0, 0);
+/* ========================================
+ * 1. Global Variables & Reset
+ * ======================================== */
+:root {
+  /* Colors */
+  --color-background-primary: linear-gradient(to bottom, #020917, #101725);
+  --color-background-error: rgb(149, 0, 0);
+  --color-border-dark: rgb(31, 31, 31);
+  --color-shadow-medium: rgb(96, 96, 96);
+  --color-placeholder-text: rgba(222, 10, 10, 0.475);
+  --color-success-button: rgb(63, 63, 230);
+  --color-delete-button-hover: rgb(63, 63, 230);
+
+  /* Shapes & Spacing */
+  --border-radius-lg: 30px;
+  --border-radius-xl: 32px;
+  --radius-pill: 1000px;
+  --gap-medium: 1rem;
+}
+
+*,
+*::before,
+*::after {
+  /* Use variables for global reset values */
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
   color: #fff;
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-  background-image: var(--background-color);
+  background-image: var(--color-background-primary);
 }
 
+/* ========================================
+ * 2. Layout Containers
+ * ======================================== */
 main {
   display: flex;
   align-items: center;
@@ -26,22 +51,14 @@ main {
   justify-content: center;
 }
 
-.content h1 {
-  font-size: 3.6rem;
-  font-weight: 700;
-}
-
-.content p {
-  font-size: 1.2rem;
-  font-weight: 400;
-  opacity: 0.5;
-}
-
+/* ========================================
+ * 3. Form and Input Styling
+ * ======================================== */
 #form-add-task {
   display: flex;
   flex-direction: column;
   padding: 1rem;
-  border-radius: 30px;
+  border-radius: var(--border-radius-lg);
   border: 2px solid grey;
   width: 35vw;
   gap: 1rem;
@@ -56,103 +73,85 @@ main {
 }
 
 #form-add-task input[type='submit'] {
-  border-radius: 30px;
+  border-radius: var(--border-radius-lg);
 }
 
 #form-add-task input[type='submit']:hover {
   background: blue;
 }
 
-#todos-list-border {
-  padding: 1rem;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background: var(--background-color);
-  border-radius: 33px;
-}
-
-#todos-list-border::before {
-  content: '';
-  position: absolute;
-  width: calc(100% + 0.2rem);
-  height: calc(100% + 0.2rem);
-  border-radius: 32px;
-  background: linear-gradient(to bottom, red, yellow);
-  z-index: -1;
-}
-
-#todos-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  width: 50vw;
-}
-
-.todo-item {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  border: 3px solid #fff;
-}
-
-.todo-item::before {
-  content: '';
-  position: absolute;
-  background: red;
-  width: calc(100%);
-  height: calc(100%);
-  z-index: -1;
-}
-
-.todo-item > span {
-  font-size: large;
-  display: flex;
-  height: 1.5em;
-  padding: 0.5em;
-  gap: 0.5rem;
-  justify-content: space-between;
-  align-items: center;
-  background: blue;
-}
-
-.todo-item > span > div {
-  display: flex;
-  gap: 0.5em;
-}
-
-.todo-item > div {
-  padding: 6px;
-  height: 5rem;
-}
-
-.todo-item > div:empty {
-  display: none;
-}
-
 #form-task-content {
   display: none;
 }
 
-#todos-list-options {
-  display: flex;
-  justify-content: flex-end;
-  width: 50vw;
+/* ========================================
+ * 4. Todo List & Error Display
+ * ======================================== */
+
+#todos-list {
+    /*display: grid;*/
+    column-count: 4;
+    column-gap: 1em;
+    align-items: start;
 }
 
+.todo-item {
+    margin-top: 1em;
+
+    align-items: center;
+    
+    width: 20rem;
+    
+    border-radius: 15px;
+    background-color: blue;
+    
+    height: auto;
+
+    break-inside: avoid;
+}
+
+.todo-item-title {
+    grid-area: title;
+}
+
+.todo-item-header {
+    padding: 1em;
+}
+
+.todo-item-data {
+    justify-content: space-between;
+    display: flex;
+    grid-area: data;
+}
+
+.todo-iten-content {
+    display: flexbox;
+    width: 20rem;
+    word-wrap: break-word;
+    
+    padding: 0.5em;
+    background-color: white;
+    color: black;
+
+    justify-content: flex-end;
+    
+    border-radius: 0 0 15px 15px;
+
+    grid-area: content;
+}
+
+.todo-iten-content:empty {
+    display: none;
+}
+
+/* Error Frame */
 #error-frame {
   width: 50vw;
-
   display: flex;
   flex-direction: column;
   justify-self: center;
-
   padding: 1em;
   gap: 0.2em;
-
   background: transparent;
 }
 
@@ -166,10 +165,10 @@ main {
   height: 1em;
   display: flex;
   justify-content: space-between;
-  background: var(--background-color-error);
+  background: var(--color-background-error);
   border: 0.15em solid rgb(1, 4, 10);
   box-shadow: 10px 10px 100px;
-  border-radius: 30px;
+  border-radius: var(--border-radius-lg);
   align-items: center;
 }
 
@@ -183,32 +182,30 @@ main {
 
 .error-fallback {
   padding: 1em;
-  background: var(--background-color-error);
+  background: var(--color-background-error);
   border: 0.15em solid rgb(1, 4, 10);
   box-shadow: 10px 10px 100px;
-  border-radius: 30px;
+  border-radius: var(--border-radius-lg);
   font-size: 15px;
 }
 
+/* ========================================
+ * 5. Delete All Modal
+ * ======================================== */
 #delete-all-modal[open] {
   padding: 2em;
   font-size: 24px;
-
   display: flex;
   flex-direction: column;
   gap: 3em;
-
   justify-content: center;
   align-items: center;
-
-  border-radius: 30px;
-  border-color: rgb(31, 31, 31);
+  border-radius: var(--border-radius-lg);
+  border-color: var(--color-border-dark);
   border-width: 1px;
-
-  background: rgba(222, 10, 10, 0.475);
+  background: var(--color-placeholder-text);
   backdrop-filter: blur(10px);
-
-  box-shadow: 0px 0px 30px rgb(96, 96, 96);
+  box-shadow: 0px 0px 30px var(--color-shadow-medium);
 }
 
 #delete-all-modal span {
@@ -218,7 +215,6 @@ main {
 
 #delete-all-modal div {
   width: 70%;
-
   display: flex;
   justify-content: space-between;
 }
@@ -229,27 +225,22 @@ main {
 
 #delete-all-modal button {
   padding: 1em 2em;
-
   border: none;
   outline: none;
-
-  border-radius: 1000px;
+  border-radius: var(--radius-pill);
 }
 
 #delete-all-modal button:hover {
-  background-color: rgb(63, 63, 230);
+  background-color: var(--color-delete-button-hover);
 }
 
+/* Component specific button for delete all */
 #btn-delete-all {
-    padding: 0.5em;
-    
-    font-size: 1em;
-    
-    border: none;
-    outline: none;
-    
-    border-radius: 30px;
-
-    background: #8c1d1f;
-    color: #cccccc;
+  padding: 0.5em;
+  font-size: 1em;
+  border: none;
+  outline: none;
+  border-radius: var(--border-radius-lg);
+  background: #8c1d1f;
+  color: #cccccc;
 }
