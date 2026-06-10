@@ -190,9 +190,9 @@ main {
   font-size: 15px;
 }
 
-#delete-all-modal:open {
+#delete-all-modal[open] {
   padding: 2em;
-  font-size: 24;
+  font-size: 24px;
 
   display: flex;
   flex-direction: column;
