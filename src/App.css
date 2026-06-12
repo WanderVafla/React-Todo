@@ -113,7 +113,8 @@ time {
 }
 
 button:hover,
-input[type='date']:hover {
+input[type='date']:hover,
+select:hover{
   background: #356fad;
   color: #ffffff;
 }
