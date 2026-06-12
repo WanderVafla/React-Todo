@@ -1,13 +1,131 @@
-import { useActionState, useState, type Dispatch } from 'react';
+import { useActionState, useRef, useState } from 'react';
 import type { Task } from '../../types';
 import { ErrorMessage } from '../../constants';
-import { isPassed } from '../../utiles';
+import { isPassed } from '../../utils';
 import { useTodosStore } from '../../store';
+
+export function TodoItem({ task }: { task: Task }) {
+  const [isChecked, setIsChecked] = useState(task.done);
+
+  const changeTask = useTodosStore((state) => state.changeTodo);
+  const deleteTask = useTodosStore((state) => state.deleteTodo);
+
+  const handleChecked = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const target = event.target.checked;
+    setIsChecked(target);
+    changeTask(task.id, { done: target });
+  };
+
+  const remove = () => {
+    deleteTask(task.id);
+  };
+
+  return (
+    <>
+      <div className="todo-item">
+        <div className="todo-item-header">
+          <h2 className="todo-item-title">{task.title}</h2>
+          <div className="todo-item-data">
+            <div className="todo-item-data-checked">
+              <input
+                type="checkbox"
+                checked={isChecked}
+                onChange={handleChecked}
+                aria-label="completed"
+              />
+              {!task.due_date ? (
+                <span className='no-date'>no date</span>
+              ) : (
+                <time dateTime={task.due_date}>{task.due_date}</time>
+              )}
+            </div>
+            <div>
+              <EditModal
+                taskName={task.title}
+                due={task.due_date}
+                content={task.content}
+                taskId={task.id}
+              />
+              <button type="button" onClick={remove}>
+                Remove
+              </button>
+            </div>
+          </div>
+        </div>
+        <div className="todo-iten-content">{task.content}</div>
+      </div>
+    </>
+  );
+}
+
+function EditModal({
+  taskName,
+  due,
+  content,
+  taskId,
+}: {
+  taskName: string;
+  due: string | null;
+  content: string | null;
+  taskId: number;
+}) {
+  const editModalRef = useRef<HTMLDialogElement | null>(null);
+  const [_state, formAction, _isPending] = useActionState(
+    (prevState: number, formData: FormData) =>
+      updateTask(prevState, formData, editModalRef.current),
+    taskId,
+  );
+  const openEditModal = () => {
+    if (editModalRef.current !== null) {
+      editModalRef.current.showModal();
+    }
+  };
+
+  const closeEditModal = () => {
+    if (editModalRef.current !== null) {
+      editModalRef.current.close();
+    }
+  };
+
+  return (
+    <>
+      <button type="button" onClick={openEditModal}>
+        Edit
+      </button>
+
+      <dialog ref={editModalRef}>
+        <form action={formAction}>
+          <div className="todo-item-dialog">
+            <div className="todo-item-header">
+              <input type="text" name="title" defaultValue={taskName}/>
+              <div className="todo-item-data">
+                <input type="date" name="due" defaultValue={due ?? ''} />
+                <div>
+                  <button type="submit">Save</button>
+                  <button type="button" onClick={closeEditModal}>
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div className="todo-iten-content">
+              <textarea
+                name="content"
+                defaultValue={content ?? ''}
+                placeholder="A little more about task..."
+              />
+            </div>
+          </div>
+        </form>
+      </dialog>
+    </>
+  );
+}
 
 async function updateTask(
   previousState: number,
   formData: FormData,
-  setIsEditing: Dispatch<boolean>,
+  editModal: HTMLDialogElement | null,
 ): Promise<number> {
   const taskTitle = formData.get('title') as string | null;
   const taskContent = formData.get('content') as string | null;
@@ -36,90 +154,8 @@ async function updateTask(
     due_date: taskDue !== '' ? taskDue : null,
   };
   useTodosStore.getState().changeTodo(Number(id), newTask);
-
-  setIsEditing(false);
+  if (editModal) {
+    editModal.close();
+  }
   return id;
-}
-
-export function TodoItem({ task }: { task: Task }) {
-  const [isChecked, setIsChecked] = useState(task.done);
-  const [isEditing, setIsEditing] = useState(false);
-
-  const changeTask = useTodosStore((state) => state.changeTodo);
-  const deleteTask = useTodosStore((state) => state.deleteTodo);
-
-  const [_state, formAction, _isPending] = useActionState(
-    (previousState: number, formData: FormData) =>
-      updateTask(previousState, formData, setIsEditing),
-
-    task.id,
-  );
-
-  const handleChecked = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const target = event.target.checked;
-    setIsChecked(target);
-    changeTask(task.id, { done: target });
-  };
-
-  const remove = () => {
-    deleteTask(task.id);
-  };
-
-  const toggleEditing = async () => {
-    setIsEditing((prev) => !prev);
-  };
-
-  return (
-    <>
-      {!isEditing ? (
-        <div className="todo-item">
-          <span>
-            <div>
-              <input
-                type="checkbox"
-                checked={isChecked}
-                onChange={handleChecked}
-              />
-
-              <span>{task.title}</span>
-            </div>
-            <span>{!task.due_date ? 'no date' : task.due_date}</span>
-            <div>
-              <button type="button" onClick={toggleEditing}>
-                Edit
-              </button>
-              <button type="button" onClick={remove}>
-                Remove
-              </button>
-            </div>
-          </span>
-          <div>{task.content && task.content}</div>
-        </div>
-      ) : (
-        <form action={formAction}>
-          <div className="todo-item">
-            <span>
-              <div>
-                <input
-                  type="checkbox"
-                  checked={isChecked}
-                  onChange={handleChecked}
-                />
-                <input type="text" name="title" defaultValue={task.title} />
-              </div>
-              <input type="date" name="due" defaultValue={task.due_date} />
-              <div>
-                <button type="submit">Save</button>
-                <button type="button" onClick={toggleEditing}>
-                  Cancel
-                </button>
-              </div>
-            </span>
-
-            <textarea name="content" defaultValue={task.content}></textarea>
-          </div>
-        </form>
-      )}
-    </>
-  );
 }

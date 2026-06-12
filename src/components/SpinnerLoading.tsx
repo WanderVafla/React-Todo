@@ -1,3 +1,3 @@
 export function SpinnerLoading() {
-  return <div>loading...</div>;
+  return <div id="spinner-loading">loading...</div>;
 }

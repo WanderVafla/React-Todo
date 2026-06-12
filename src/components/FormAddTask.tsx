@@ -1,7 +1,7 @@
 import { useActionState, useEffect, useRef, useState } from 'react';
 import type { TaskPost } from '../types';
 import { ErrorMessage } from '../constants';
-import { isPassed } from '../utiles';
+import { isPassed } from '../utils';
 import { useTodosStore } from '../store';
 
 async function addNewTask(_previousState: null, formData: FormData) {
@@ -23,7 +23,7 @@ async function addNewTask(_previousState: null, formData: FormData) {
   }
 
   const newTask: TaskPost = {
-    title: taskTitle.trim() !== '' ? taskTitle : null,
+    title: taskTitle,
     content: taskContent.trim() ? taskContent : null,
     due_date: taskDue !== '' ? taskDue : null,
     done: false,
