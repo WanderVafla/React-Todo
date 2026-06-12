@@ -28,12 +28,14 @@ export function TodoList() {
   return (
     <>
       {tasks.length > 0 ? (
-        <div id="todos-list-border">
+        <>
           <div id="todos-list-options">
-            <label htmlFor="">done:</label>
-            <button type="button" onClick={setFilterState}>
-              {filterState}
-            </button>
+            <label>
+              filter:
+              <button type="button" onClick={setFilterState}>
+                {filterState}
+              </button>
+            </label>
 
             <select
               name="sort-select"
@@ -45,7 +47,7 @@ export function TodoList() {
               ))}
             </select>
           </div>
-          <hr />
+
           <div id="todos-list">
             {tasks
               .filter((task) => {
@@ -57,7 +59,7 @@ export function TodoList() {
                 <TodoItem key={task.id} task={task} />
               ))}
           </div>
-        </div>
+        </>
       ) : (
         'No task to complete.'
       )}

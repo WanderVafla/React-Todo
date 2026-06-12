@@ -22,83 +22,95 @@ export function TodoItem({ task }: { task: Task }) {
 
   return (
     <>
-        <div className="todo-item">
-            <div className='todo-item-header'>
-            <span className='todo-item-title'>
-            {task.title}
-            </span>
-            <div className='todo-item-data'>
-              <input
-                type="checkbox"
-                checked={isChecked}
+      <div className="todo-item">
+        <div className="todo-item-header">
+          <h2 className="todo-item-title">{task.title}</h2>
+          <div className="todo-item-data">
+            <div className='todo-item-data-checked'>
+            <input
+              type="checkbox"
+              checked={isChecked}
                 onChange={handleChecked}
+                aria-label='complited'
+            />
+            {!task.due_date
+              ? <time dateTime='no date'>no date</time>
+              : <time dateTime={task.due_date}>{task.due_date}</time>}
+              
+            </div>
+            <div>
+              <EditModal
+                taskName={task.title}
+                due={task.due_date}
+                content={task.content}
+                taskId={task.id}
               />
-              <span>{!task.due_date ? 'no date' : task.due_date}</span>
-              <div>
-                <EditModal taskName={task.title} due={task.due_date} content={task.content} taskId={task.id} />
-                <button type="button" onClick={remove}>
-                  Remove
-                </button>
-              </div>
+              <button type="button" onClick={remove}>
+                Remove
+              </button>
             </div>
-            </div>
-            <div className='todo-iten-content'>
-              {task.content}
           </div>
         </div>
+        <div className="todo-iten-content">{task.content}</div>
+      </div>
     </>
   );
 }
 
+function EditModal({
+  taskName,
+  due,
+  content,
+  taskId,
+}: {
+  taskName: string;
+  due: string | null;
+  content: string | null;
+  taskId: number;
+}) {
+  const [_state, formAction, _isPending] = useActionState(updateTask, taskId);
 
-function EditModal({ taskName, due, content, taskId }: { taskName: string, due: string | null, content: string | null, taskId: number }) {
-  const [_state, formAction, _isPending] = useActionState(
-    updateTask, taskId,
-  );
-
-  const editModalRef = useRef<HTMLDialogElement | null>(null)
+  const editModalRef = useRef<HTMLDialogElement | null>(null);
   const openEditModal = () => {
     if (editModalRef.current !== null) {
       editModalRef.current.showModal();
     }
-  }
+  };
 
   const closeEditModal = () => {
     if (editModalRef.current !== null) {
       editModalRef.current.close();
     }
-  }
+  };
   return (
     <>
-    <button type='button' onClick={openEditModal}>Edit</button>
-      
+      <button type="button" onClick={openEditModal}>
+        Edit
+      </button>
+
       <dialog ref={editModalRef}>
         <form action={formAction}>
-          <div className="todo-item">
-            <div className='todo-item-header'>
-              
-              <input type='text' name='title' defaultValue={taskName} />
-              <div className='todo-item-data'>
-                
-              <input type='date' name='due' defaultValue={due} />
-              <div>
-                <button type="submit">
-                  Save
-                </button>
-                <button type="button" onClick={closeEditModal}>
-                  Cancel
-                </button>
-            </div>
+          <div className="todo-item-dialog">
+            <div className="todo-item-header">
+              <input type="text" name="title" defaultValue={taskName} />
+              <div className="todo-item-data">
+                <input type="date" name="due" defaultValue={due} />
+                <div>
+                  <button type="submit">Save</button>
+                  <button type="button" onClick={closeEditModal}>
+                    Cancel
+                  </button>
+                </div>
               </div>
             </div>
-            <div className='todo-iten-content'>
-              <textarea name='content' defaultValue={content} />
-          </div>
+            <div className="todo-iten-content">
+              <textarea name="content" defaultValue={content} placeholder='A litle more about task...'/>
+            </div>
           </div>
         </form>
-    </dialog>
+      </dialog>
     </>
-  )
+  );
 }
 
 async function updateTask(
