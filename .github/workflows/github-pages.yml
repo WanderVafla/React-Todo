@@ -42,7 +42,7 @@ jobs:
           cache: true
        
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm i
 
       - name: Build
         run: pnpm run build
