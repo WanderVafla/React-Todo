@@ -3,8 +3,8 @@
  * ======================================== */
 :root {
   /* Colors */
-  --color-background-primary: linear-gradient(to bottom, #020917, #101725);
-  --color-background-error: rgb(149, 0, 0);
+  --color-background-primary: #ffffff;
+  --color-background-error: #c50000;
   --color-border-dark: rgb(31, 31, 31);
   --color-shadow-medium: rgb(96, 96, 96);
   --color-placeholder-text: rgba(222, 10, 10, 0.475);
@@ -25,11 +25,92 @@
   box-sizing: border-box;
 }
 
+h1,h2,h3,h4,h5,h6 {
+    padding: 0;
+    margin: 0;
+}
+
+h1 {
+    color: black;
+}
+
 body {
-  margin: 0;
+  margin: 1rem 0;
   color: #fff;
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
   background-image: var(--color-background-primary);
+}
+
+textarea {    
+    field-sizing: content;
+    resize: none;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  margin: 0.2rem;
+
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  border: none;
+  outline: none;
+
+  border-radius: 30px;
+
+  background-color: var(--color-background-primary);
+  color: black;
+
+  box-shadow: 1px 1px 3px var(--color-shadow-medium);
+}
+
+select {    
+    padding: 0.5rem 1rem;
+    
+    outline: none;
+    border: none;
+
+    background-color: transparent;
+    
+    border-radius: var(--border-radius-lg);
+
+    box-shadow: 1px 1px 3px var(--color-shadow-medium);
+}
+
+input[type='date'] {
+  padding: 0.5rem 1rem;
+  margin: 0.5rem;
+  
+  border: none;
+  outline: none;
+
+  border-radius: 30px;
+
+  background: var(--color-background-primary);
+  color: black;
+
+  box-shadow: 1px 1px 3px var(--color-shadow-medium);
+}
+
+time {
+    padding: 0.2em 0.4em;
+  
+    border: none;
+    outline: none;
+  
+    border-radius: 30px;
+  
+    background: var(--color-background-primary);
+    color: black;
+  
+    box-shadow: 1px 1px 3px var(--color-shadow-medium);
+}
+
+button:hover,
+input[type='date']:hover {
+  background: #356fad;
+  color: #ffffff;
 }
 
 /* ========================================
@@ -39,13 +120,13 @@ main {
   display: flex;
   align-items: center;
   flex-direction: column;
-  gap: 1rem;
+  gap: 2rem;
 }
 
 dialog {
-    background: none;
-    border: none;
-    outline: none;
+  background: none;
+  border: none;
+  outline: none;
 }
 
 dialog::backdrop {
@@ -72,22 +153,14 @@ dialog::backdrop {
   border: 2px solid grey;
   width: 35vw;
   gap: 1rem;
+
+  box-shadow: 3px 3px 8px var(--color-shadow-medium);
 }
 
 #form-add-task * {
   border: none;
   outline: none;
-  background: transparent;
-  color: white;
   height: 2rem;
-}
-
-#form-add-task input[type='submit'] {
-  border-radius: var(--border-radius-lg);
-}
-
-#form-add-task input[type='submit']:hover {
-  background: blue;
 }
 
 #form-task-content {
@@ -97,53 +170,115 @@ dialog::backdrop {
 /* ========================================
  * 4. Todo List & Error Display
  * ======================================== */
+#todos-list-options {
+  padding: 1rem 1.5rem;
+  border-radius: var(--border-radius-lg);
 
-#todos-list {
-    /*display: grid;*/
-    column-count: 4;
-    column-gap: 1em;
-    align-items: start;
+  font-size: 18px;
+  font-family: 700;
+  
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 1rem;
+
+  border: 1px solid var(--color-border-dark);
+  color: black;
+
+  box-shadow: 1px 1px 10px var(--color-shadow-medium);
 }
 
-.todo-item { 
-    height: auto;
-    width: 20rem;
-    margin-top: 1em;
+#todos-list {
+  padding: 1.5em 3em;
 
-    align-items: center;    
-    break-inside: avoid;
-    
-    background-color: blue;
-    border-radius: 15px;
+  column-count: 4;
+  column-gap: 1em;
+  align-items: start;
+
+  border-radius: var(--border-radius-xl);
+  box-shadow: 1px 1px 10px var(--color-shadow-medium);
+}
+
+.todo-item {
+  height: auto;
+  width: 20rem;
+  margin-top: 1em;
+
+  border: 1px solid var(--color-border-dark);
+  box-shadow: 2px 2px 16px var(--color-shadow-medium);
+
+  align-items: center;
+  break-inside: avoid;
+
+  background-color: #3981ce;
+  border-radius: 15px;
 }
 
 .todo-item-header {
-    padding: 1em;
+  padding: 1em;
+}
+
+.todo-item-header > input {
+    padding: 0.5rem 0.5rem;
+    
+    border: none;
+    outline: none;
+    
+    background-color: transparent;
+    color: var(--color-background-primary);
+    
+    font-size: 24px;
+    font-weight: 700;
 }
 
 .todo-item-data {
-    justify-content: space-between;
-    display: flex;
+  display: flex;
+  justify-content: space-between;
+
+  align-items: center;
 }
 
-.todo-iten-content {
-    word-wrap: break-word;
-    
-    padding: 0.5em;
-    background-color: white;
-    color: black;
-    
-    border-radius: 0 0 15px 15px;
+.todo-item-data-checked {
+    display: flex;
+    gap: 0.3rem;
+}
+
+.todo-iten-content {    
+  word-wrap: break-word;
+
+  padding: 0.5em;
+  background-color: #ffffff;
+  color: black;
+
+  border-radius: 0 0 15px 15px;
 }
 
 .todo-iten-content:empty {
-    display: none;
+  display: none;
 }
 
 .todo-iten-content > textarea {
-    width: 100%;
-    outline: none;
-    border: none;
+  margin: 0.5rem;
+    
+  width: 100%;
+  outline: none;
+  
+  border: none;
+}
+
+.todo-item-dialog {
+    width: 50rem;
+    margin-top: 1em;
+  
+    border: 1px solid var(--color-border-dark);
+    box-shadow: 2px 2px 16px var(--color-shadow-medium);
+  
+    align-items: center;
+    break-inside: avoid;
+  
+    background-color: #3981ce;
+    border-radius: 15px;
 }
 
 /* Error Frame */
@@ -162,15 +297,22 @@ dialog::backdrop {
 }
 
 .error-item {
-  font-size: large;
   padding: 0.8em;
-  height: 1em;
+  
+  height: 3rem;
+  
   display: flex;
   justify-content: space-between;
-  background: var(--color-background-error);
-  border: 0.15em solid rgb(1, 4, 10);
-  box-shadow: 10px 10px 100px;
+  
+  font-size: large;
+  font-weight: 700;
+  
+  border: 1px solid var(--color-border-dark);
   border-radius: var(--border-radius-lg);
+  
+  background: var(--color-background-error);
+  box-shadow: 3px 3px 10px var(--color-shadow-medium);
+  
   align-items: center;
 }
 
@@ -239,6 +381,6 @@ dialog::backdrop {
   border: none;
   outline: none;
   border-radius: var(--border-radius-lg);
-  background: #8c1d1f;
-  color: #cccccc;
+  background: var(--color-background-error);
+  color: var(--color-background-primary);
 }
