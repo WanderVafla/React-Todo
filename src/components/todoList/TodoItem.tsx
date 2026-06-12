@@ -1,4 +1,4 @@
-import { useActionState, useEffect, useRef, useState } from 'react';
+import { useActionState, useRef, useState } from 'react';
 import type { Task } from '../../types';
 import { ErrorMessage } from '../../constants';
 import { isPassed } from '../../utiles';
@@ -26,17 +26,18 @@ export function TodoItem({ task }: { task: Task }) {
         <div className="todo-item-header">
           <h2 className="todo-item-title">{task.title}</h2>
           <div className="todo-item-data">
-            <div className='todo-item-data-checked'>
-            <input
-              type="checkbox"
-              checked={isChecked}
+            <div className="todo-item-data-checked">
+              <input
+                type="checkbox"
+                checked={isChecked}
                 onChange={handleChecked}
-                aria-label='complited'
-            />
-            {!task.due_date
-              ? <time dateTime='no date'>no date</time>
-              : <time dateTime={task.due_date}>{task.due_date}</time>}
-              
+                aria-label="complited"
+              />
+              {!task.due_date ? (
+                <time dateTime="no date">no date</time>
+              ) : (
+                <time dateTime={task.due_date}>{task.due_date}</time>
+              )}
             </div>
             <div>
               <EditModal
@@ -68,10 +69,12 @@ function EditModal({
   content: string | null;
   taskId: number;
 }) {
-
   const editModalRef = useRef<HTMLDialogElement | null>(null);
   const [_state, formAction, _isPending] = useActionState(
-    (prevState: number, formData: FormData) => updateTask(prevState, formData, editModalRef.current), taskId);
+    (prevState: number, formData: FormData) =>
+      updateTask(prevState, formData, editModalRef.current),
+    taskId,
+  );
   const openEditModal = () => {
     if (editModalRef.current !== null) {
       editModalRef.current.showModal();
@@ -83,7 +86,7 @@ function EditModal({
       editModalRef.current.close();
     }
   };
-  
+
   return (
     <>
       <button type="button" onClick={openEditModal}>
@@ -106,7 +109,11 @@ function EditModal({
               </div>
             </div>
             <div className="todo-iten-content">
-              <textarea name="content" defaultValue={content} placeholder='A litle more about task...'/>
+              <textarea
+                name="content"
+                defaultValue={content}
+                placeholder="A litle more about task..."
+              />
             </div>
           </div>
         </form>
@@ -118,7 +125,7 @@ function EditModal({
 async function updateTask(
   previousState: number,
   formData: FormData,
-  editModal: HTMLDialogElement | null
+  editModal: HTMLDialogElement | null,
 ): Promise<number> {
   const taskTitle = formData.get('title') as string | null;
   const taskContent = formData.get('content') as string | null;
@@ -150,6 +157,5 @@ async function updateTask(
   if (editModal) {
     editModal.close();
   }
-    return id;
-  
+  return id;
 }

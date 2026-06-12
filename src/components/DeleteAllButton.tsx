@@ -12,24 +12,24 @@ export function DeleteAllDialog() {
 
   const closeModal = () => {
     if (dialogRef.current !== null) {
-      dialogRef.current.close()
+      dialogRef.current.close();
     }
-  }
+  };
 
   const openModal = () => {
     if (dialogRef.current !== null) {
-      dialogRef.current.showModal()
+      dialogRef.current.showModal();
     }
-  }
+  };
 
   return (
     <>
       <button
-        id='btn-delete-all'
+        id="btn-delete-all"
         type="button"
         onClick={() => {
           if (tasks !== null && tasks.length > 0) {
-            openModal()
+            openModal();
           } else {
             addError(ErrorMessage.haveNotTasks);
           }
