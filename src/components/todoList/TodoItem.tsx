@@ -1,7 +1,7 @@
 import { useActionState, useRef, useState } from 'react';
 import type { Task } from '../../types';
 import { ErrorMessage } from '../../constants';
-import { isPassed } from '../../utiles';
+import { isPassed } from '../../utils;
 import { useTodosStore } from '../../store';
 
 export function TodoItem({ task }: { task: Task }) {
