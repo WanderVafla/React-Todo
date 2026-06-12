@@ -7,6 +7,11 @@ Clone reposetory
 git clone git@github.com:WanderVafla/React-Todo.git
 ```
 
+Move in folder
+```bash
+cd React-Todo
+```
+
 Install the dependencies:
 
 ```bash
@@ -47,11 +52,11 @@ This Todo List application comes packed with a variety of features designed to h
 
 ## Tech Stack
 
-* **Core:** React (Functional Components & Hooks)
-* **State Management:** Zustand (Clean, lightweight, and centralized global state)
+* **Core:** [React](https://react.dev/) (Functional Components & Hooks)
+* **State Management:** [Zustand](https://zustand.docs.pmnd.rs/learn/getting-started/introduction) (Clean, lightweight, and centralized global state)
 * **Database / Backend:** REST API using Async/Await (`api.ts`) with data persistence
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
 src/
@@ -73,3 +78,41 @@ src/
 ├── store.ts             # Zustand global state store
 ├── types.ts             # Shared TypeScript interfaces and types
 └── utiles.ts            # Helper/utility functions
+```
+
+## Component Tree & Architecture
+
+The diagram below maps out the complete component hierarchy, architectural wrappers, and nesting layouts based on the application's source code and live DOM state:
+
+```text
+                                  [ App.tsx ]
+                                       │
+           ┌───────────────────────────┼─────────────────────────────────────┐
+           │                           │                                     │
+    [ ErrorFrame ]                  [ main ] (HTML base component)  [ DeleteAllDialog ]
+           │                           │
+     [ ErrorItem ]                 ┌───┴───┐
+                                   │  h1   │ (HTML base component)
+                                   └───┬───┘
+                                       │
+                                 [ Suspense ] (fallback: <SpinnerLoading />)
+                                       │
+                    ┌──────────────────┴──────────────────┐
+                    │                                     │
+             [ FormAddTask ]                       [ ErrorBoundary ] (fallback: <ErrorFallback />)
+                                                          │
+                                                    [ TodoList ]
+                                                          │
+                                                    [ TodoItem ]
+                                                          │
+                                                    [ EditModal ]
+```
+
+### Breakdown of what this shows:
+* **The Global Layer:** `ErrorFrame` (and its children `ErrorItem`) handles global error toast alerts, while `DeleteAllDialog` handles overlay modal confirmations. Both live outside the primary layout container.
+> #### Component Interactions & Modals:
+> * **`EditModal`** is embedded inside each `TodoItem`. Clicking the edit button triggers a modal overlay that allows the user to update the specific task's details.
+>  * **`DeleteAllDialog`** acts as a safety confirmation checkpoint. Clicking the "Delete All" button opens a dialog window asking the user to confirm before wiping the database store.
+
+* **The Structural Layer:** The `<main>` HTML tags contain the core app layout.
+* **The Async & Safety Layer:** `<Suspense>` catches loading states (rendering your `SpinnerLoading` component), while the `<ErrorBoundary>` isolates any runtime crashes inside the list without breaking the rest of the application.
