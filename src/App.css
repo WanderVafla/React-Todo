@@ -205,6 +205,12 @@ dialog::backdrop {
   box-shadow: 1px 1px 10px var(--color-shadow-medium);
 }
 
+#no-task-to-complite,
+#spinner-loading {
+    color: black;
+}
+
+
 .todo-item {
   height: auto;
   width: 20rem;

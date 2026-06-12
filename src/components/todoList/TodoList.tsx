@@ -61,7 +61,9 @@ export function TodoList() {
           </div>
         </>
       ) : (
-        'No task to complete.'
+          <span id='no-task-to-complite'>
+            No task to complete.
+        </span>
       )}
     </>
   );
