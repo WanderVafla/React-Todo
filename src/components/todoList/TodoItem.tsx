@@ -1,7 +1,7 @@
 import { useActionState, useRef, useState } from 'react';
 import type { Task } from '../../types';
 import { ErrorMessage } from '../../constants';
-import { isPassed } from '../../utils;
+import { isPassed } from '../../utils';
 import { useTodosStore } from '../../store';
 
 export function TodoItem({ task }: { task: Task }) {
@@ -99,7 +99,7 @@ function EditModal({
             <div className="todo-item-header">
               <input type="text" name="title" defaultValue={taskName} />
               <div className="todo-item-data">
-                <input type="date" name="due" defaultValue={due} />
+                <input type="date" name="due" defaultValue={due ?? ''} />
                 <div>
                   <button type="submit">Save</button>
                   <button type="button" onClick={closeEditModal}>
@@ -111,7 +111,7 @@ function EditModal({
             <div className="todo-iten-content">
               <textarea
                 name="content"
-                defaultValue={content}
+                defaultValue={content ?? ''}
                 placeholder="A litle more about task..."
               />
             </div>

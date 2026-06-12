@@ -1,7 +1,7 @@
 import { useActionState, useEffect, useRef, useState } from 'react';
 import type { TaskPost } from '../types';
 import { ErrorMessage } from '../constants';
-import { isPassed } from '../utils;
+import { isPassed } from '../utils';
 import { useTodosStore } from '../store';
 
 async function addNewTask(_previousState: null, formData: FormData) {
