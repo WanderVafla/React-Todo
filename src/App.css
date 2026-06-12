@@ -98,7 +98,8 @@ input[type='date'] {
   box-shadow: 1px 1px 3px var(--color-shadow-medium);
 }
 
-time {
+time,
+.no-date {
   padding: 0.2em 0.4em;
 
   border: none;
@@ -181,7 +182,7 @@ dialog::backdrop {
   border-radius: var(--border-radius-lg);
 
   font-size: 18px;
-  font-family: 700;
+  font-weight: 700;
 
   display: flex;
   justify-content: space-between;

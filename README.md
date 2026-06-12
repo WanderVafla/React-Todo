@@ -2,7 +2,7 @@
 
 ## Setup
 
-Clone reposetory
+Clone repository
 ```bash
 git clone git@github.com:WanderVafla/React-Todo.git
 ```

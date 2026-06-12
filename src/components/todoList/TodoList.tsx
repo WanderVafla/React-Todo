@@ -30,12 +30,12 @@ export function TodoList() {
       {tasks.length > 0 ? (
         <>
           <div id="todos-list-options">
-            <label>
+            <span>
               filter:
               <button type="button" onClick={setFilterState}>
                 {filterState}
               </button>
-            </label>
+            </span>
 
             <select
               name="sort-select"

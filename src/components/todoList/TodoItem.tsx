@@ -31,10 +31,10 @@ export function TodoItem({ task }: { task: Task }) {
                 type="checkbox"
                 checked={isChecked}
                 onChange={handleChecked}
-                aria-label="complited"
+                aria-label="completed"
               />
               {!task.due_date ? (
-                <time dateTime="no date">no date</time>
+                <span className='no-date'>no date</span>
               ) : (
                 <time dateTime={task.due_date}>{task.due_date}</time>
               )}
@@ -97,7 +97,7 @@ function EditModal({
         <form action={formAction}>
           <div className="todo-item-dialog">
             <div className="todo-item-header">
-              <input type="text" name="title" defaultValue={taskName} />
+              <input type="text" name="title" defaultValue={taskName}/>
               <div className="todo-item-data">
                 <input type="date" name="due" defaultValue={due ?? ''} />
                 <div>
@@ -112,7 +112,7 @@ function EditModal({
               <textarea
                 name="content"
                 defaultValue={content ?? ''}
-                placeholder="A litle more about task..."
+                placeholder="A little more about task..."
               />
             </div>
           </div>
