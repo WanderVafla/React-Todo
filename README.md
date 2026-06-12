@@ -54,7 +54,7 @@ This Todo List application comes packed with a variety of features designed to h
 
 * **Core:** [React](https://react.dev/) (Functional Components & Hooks)
 * **State Management:** [Zustand](https://zustand.docs.pmnd.rs/learn/getting-started/introduction) (Clean, lightweight, and centralized global state)
-* **Database / Backend:** REST API using Async/Await (`api.ts`) with data persistence
+* **Database / Backend:** [REST API](https://swagger.todos.in.jt-lab.ch/) using Async/Await (`api.ts`) with data persistence
 
 ## Project Structure
 
