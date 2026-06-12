@@ -35,8 +35,14 @@ jobs:
 
       # If you use other package managers like yarn or pnpm,
       # you will need to install them first
+      - uses: pnpm/action-setup@v6
+        name: Install pnpm
+        with:
+          version: 10
+          cache: true
+       
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Build
         run: pnpm run build
