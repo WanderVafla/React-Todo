@@ -1,4 +1,4 @@
-import { useActionState, useRef, useState } from 'react';
+import { useActionState, useEffect, useRef, useState } from 'react';
 import type { Task } from '../../types';
 import { ErrorMessage } from '../../constants';
 import { isPassed } from '../../utiles';
@@ -68,9 +68,10 @@ function EditModal({
   content: string | null;
   taskId: number;
 }) {
-  const [_state, formAction, _isPending] = useActionState(updateTask, taskId);
 
   const editModalRef = useRef<HTMLDialogElement | null>(null);
+  const [_state, formAction, _isPending] = useActionState(
+    (prevState: number, formData: FormData) => updateTask(prevState, formData, editModalRef.current), taskId);
   const openEditModal = () => {
     if (editModalRef.current !== null) {
       editModalRef.current.showModal();
@@ -82,6 +83,7 @@ function EditModal({
       editModalRef.current.close();
     }
   };
+  
   return (
     <>
       <button type="button" onClick={openEditModal}>
@@ -116,6 +118,7 @@ function EditModal({
 async function updateTask(
   previousState: number,
   formData: FormData,
+  editModal: HTMLDialogElement | null
 ): Promise<number> {
   const taskTitle = formData.get('title') as string | null;
   const taskContent = formData.get('content') as string | null;
@@ -144,6 +147,9 @@ async function updateTask(
     due_date: taskDue !== '' ? taskDue : null,
   };
   useTodosStore.getState().changeTodo(Number(id), newTask);
-
-  return id;
+  if (editModal) {
+    editModal.close();
+  }
+    return id;
+  
 }
